@@ -5,8 +5,11 @@
   "colors": {
     "primary": "#003CFE",
     "light": "#FFFFFF",
-    "dark": "#15803D"
+    "dark": "#15803D",
   },
+  "fonts": {
+    "family": "Questrial",
+  }
   "favicon": "/gradient_icon-6787089.png",
   "navigation": {
     "tabs": [

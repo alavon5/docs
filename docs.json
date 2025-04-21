@@ -4,7 +4,7 @@
   "name": "Bosscart",
   "colors": {
     "primary": "#003CFE",
-    "light": "#07C983",
+    "light": "#FFFFFF",
     "dark": "#15803D"
   },
   "favicon": "/gradient_icon-6787089.png",
@@ -76,27 +76,27 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/bosscart white.png",
+    "dark": "/bosscart main.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@alavon365.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://bosscart.io/login"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/alavon365",
+      "github": "https://github.com/alavon5/docs",
+      "linkedin": "https://linkedin.com/company/alavon356"
     }
   }
 }

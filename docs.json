@@ -76,7 +76,7 @@
     }
   },
   "logo": {
-    "light": "/bosscart white.png",
+    "light": "/bosscart%20main.png",
     "dark": "/bosscart main.png"
   },
   "navbar": {

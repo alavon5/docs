@@ -29,9 +29,9 @@
         "tab": "API Guide",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Start here",
             "pages": [
-              "introduction",
+              "api",
               "quickstart"
             ]
           },
@@ -55,7 +55,7 @@
         "tab": "Endpoints",
         "openapi": {
           "source": "openapi.json",
-          "directory": "api"
+          "directory": "endpoints"
         }
       }
     ],
@@ -81,11 +81,15 @@
     },
     {
       "source": "/api-reference",
-      "destination": "/api"
+      "destination": "/endpoints"
     },
     {
       "source": "/api-reference/*",
-      "destination": "/api/*"
+      "destination": "/endpoints/*"
+    },
+    {
+      "source": "/api/*",
+      "destination": "/endpoints/*"
     }
   ],
   "logo": {

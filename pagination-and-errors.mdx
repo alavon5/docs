@@ -1,0 +1,58 @@
+---
+title: "Pagination and errors"
+description: "Use pagination parameters and handle Bosscart API error responses."
+---
+
+List endpoints support pagination with `limit` and `skip` query parameters.
+
+## Pagination parameters
+
+<ParamField query="limit" type="integer">
+  Number of items to return. The supported range is `1` to `50`. The default is `30`.
+</ParamField>
+
+<ParamField query="skip" type="integer">
+  Number of items to skip before returning results. Use this as an offset. The default is `0`.
+</ParamField>
+
+## Paginated response
+
+Paginated responses use a shared envelope:
+
+```json
+{
+  "items": [],
+  "totalCount": 125,
+  "limit": 30,
+  "skip": 0
+}
+```
+
+To request the next page, increase `skip` by the current `limit`.
+
+```bash
+curl "https://store.example.com/api/site/orders?limit=30&skip=30" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "User-Agent: OrderExporter/1.0"
+```
+
+## Error responses
+
+Bosscart uses conventional HTTP status codes.
+
+| Status range | Meaning |
+| --- | --- |
+| `2xx` | The request succeeded. |
+| `4xx` | The request was invalid, unauthorized, or referenced a missing resource. |
+| `5xx` | The server could not process the request. |
+
+Error responses include a human-readable message:
+
+```json
+{
+  "success": false,
+  "message": "Error message..."
+}
+```
+
+Handle errors by checking both the HTTP status code and the response body.

@@ -42,14 +42,10 @@
       },
       {
         "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Bosscart API",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          }
-        ]
+        "openapi": {
+          "source": "openapi.json",
+          "directory": "api-reference"
+        }
       }
     ],
     "global": {

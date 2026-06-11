@@ -10,6 +10,7 @@ Use the webhooks endpoints to:
 - List configured webhook destinations
 - Create a webhook destination
 - Delete a webhook destination
+- Subscribe to one or more webhook event types
 
 ## Destination URL
 
@@ -20,6 +21,12 @@ Your destination URL should:
 - Validate incoming payloads before updating internal systems
 - Process events idempotently, since delivery retries can send the same event more than once
 
+## Event types
+
+<Card title="View webhook event types" href="/webhook-events">
+  See the event names you can include in the `events` array when creating a webhook.
+</Card>
+
 ## Manage webhooks
 
 | Method | Path | Description |
@@ -29,5 +36,5 @@ Your destination URL should:
 | `DELETE` | `/webhooks/{id}` | Delete a webhook. |
 
 <Note>
-  See the API reference for the request and response fields supported by webhook operations.
+  See the endpoint reference for the request and response fields supported by webhook operations.
 </Note>

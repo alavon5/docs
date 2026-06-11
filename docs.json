@@ -40,7 +40,8 @@
             "pages": [
               "authentication",
               "pagination-and-errors",
-              "webhooks-overview"
+              "webhooks-overview",
+              "webhook-events"
             ]
           },
           {

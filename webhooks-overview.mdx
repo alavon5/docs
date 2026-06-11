@@ -1,0 +1,33 @@
+---
+title: "Webhooks overview"
+description: "Use Bosscart webhooks to receive event notifications at your destination URL."
+---
+
+Webhooks send automated notifications to your destination URL when important events occur in your website.
+
+Use the webhooks endpoints to:
+
+- List configured webhook destinations
+- Create a webhook destination
+- Delete a webhook destination
+
+## Destination URL
+
+Your destination URL should:
+
+- Be reachable over HTTPS
+- Return a successful `2xx` response after receiving an event
+- Validate incoming payloads before updating internal systems
+- Process events idempotently, since delivery retries can send the same event more than once
+
+## Manage webhooks
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/webhooks` | List all webhooks. |
+| `POST` | `/webhooks` | Create a webhook. |
+| `DELETE` | `/webhooks/{id}` | Delete a webhook. |
+
+<Note>
+  See the API reference for the request and response fields supported by webhook operations.
+</Note>

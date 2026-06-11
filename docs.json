@@ -88,8 +88,36 @@
       "destination": "/endpoints/*"
     },
     {
-      "source": "/api/*",
-      "destination": "/endpoints/*"
+      "source": "/api/contacts/*",
+      "destination": "/endpoints/contacts/*"
+    },
+    {
+      "source": "/api/members/*",
+      "destination": "/endpoints/members/*"
+    },
+    {
+      "source": "/api/member-groups/*",
+      "destination": "/endpoints/member-groups/*"
+    },
+    {
+      "source": "/api/products/*",
+      "destination": "/endpoints/products/*"
+    },
+    {
+      "source": "/api/orders/*",
+      "destination": "/endpoints/orders/*"
+    },
+    {
+      "source": "/api/forms-bookings/*",
+      "destination": "/endpoints/forms-bookings/*"
+    },
+    {
+      "source": "/api/subscriber-lists/*",
+      "destination": "/endpoints/subscriber-lists/*"
+    },
+    {
+      "source": "/api/webhooks/*",
+      "destination": "/endpoints/webhooks/*"
     }
   ],
   "logo": {

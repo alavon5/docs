@@ -1,0 +1,138 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Bosscart API",
+    "description": "REST API to manage contacts, form messages, store products, orders, bookings, subscriber lists, members, member groups, and webhooks.\n\nAuthenticate requests with `Authorization: Bearer <API KEY>` and include a `User-Agent` header. Use your website domain or system domain as the `{domain}` server variable.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{domain}/api/site",
+      "description": "Your website API base URL",
+      "variables": {
+        "domain": {
+          "default": "your-domain.com",
+          "description": "Your website domain or system domain"
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    { "name": "Contacts", "description": "Visitors identified by email." },
+    { "name": "Members", "description": "Registered users in your website." },
+    { "name": "Member groups", "description": "Groups that members belong to." },
+    { "name": "Products", "description": "Items, services, or memberships for sale." },
+    { "name": "Orders", "description": "Orders placed on your website." },
+    { "name": "Forms", "description": "Form submissions from your website." },
+    { "name": "Bookings", "description": "Scheduled events and booking details." },
+    { "name": "Subscriber lists", "description": "Email marketing lists." },
+    { "name": "Webhooks", "description": "Webhook destinations and event notifications." }
+  ],
+  "paths": {
+    "/contacts": {
+      "get": { "tags": ["Contacts"], "summary": "List all contacts", "operationId": "listContacts", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "post": { "tags": ["Contacts"], "summary": "Create or update a contact", "operationId": "createOrUpdateContact", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/contacts/{id}": {
+      "get": { "tags": ["Contacts"], "summary": "Retrieve a contact", "operationId": "getContact", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "put": { "tags": ["Contacts"], "summary": "Update a contact", "operationId": "updateContact", "parameters": [{ "$ref": "#/components/parameters/id" }], "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "delete": { "tags": ["Contacts"], "summary": "Delete a contact", "operationId": "deleteContact", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "204": { "description": "Contact deleted" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/contacts/search-by-email": {
+      "get": { "tags": ["Contacts"], "summary": "Search contact by email", "operationId": "searchContactByEmail", "parameters": [{ "$ref": "#/components/parameters/email" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/members": {
+      "get": { "tags": ["Members"], "summary": "List all members", "operationId": "listMembers", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "post": { "tags": ["Members"], "summary": "Create a member", "operationId": "createMember", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/members/{id}": {
+      "get": { "tags": ["Members"], "summary": "Retrieve a member", "operationId": "getMember", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "put": { "tags": ["Members"], "summary": "Update a member", "operationId": "updateMember", "parameters": [{ "$ref": "#/components/parameters/id" }], "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "delete": { "tags": ["Members"], "summary": "Delete a member", "operationId": "deleteMember", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "204": { "description": "Member deleted" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/members/search-by-email": {
+      "get": { "tags": ["Members"], "summary": "Search member by email", "operationId": "searchMemberByEmail", "parameters": [{ "$ref": "#/components/parameters/email" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/members/start-session": {
+      "post": { "tags": ["Members"], "summary": "Start a single sign-on session", "operationId": "startMemberSession", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/member-groups": {
+      "get": { "tags": ["Member groups"], "summary": "List all member groups", "operationId": "listMemberGroups", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "post": { "tags": ["Member groups"], "summary": "Create a member group", "operationId": "createMemberGroup", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/member-groups/{id}": {
+      "get": { "tags": ["Member groups"], "summary": "Retrieve a member group", "operationId": "getMemberGroup", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "put": { "tags": ["Member groups"], "summary": "Update a member group", "operationId": "updateMemberGroup", "parameters": [{ "$ref": "#/components/parameters/id" }], "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "delete": { "tags": ["Member groups"], "summary": "Delete a member group", "operationId": "deleteMemberGroup", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "204": { "description": "Member group deleted" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/products": {
+      "get": { "tags": ["Products"], "summary": "List all products", "operationId": "listProducts", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "post": { "tags": ["Products"], "summary": "Create a product", "operationId": "createProduct", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/products/{id}": {
+      "get": { "tags": ["Products"], "summary": "Retrieve a product", "operationId": "getProduct", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "put": { "tags": ["Products"], "summary": "Update a product", "operationId": "updateProduct", "parameters": [{ "$ref": "#/components/parameters/id" }], "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "delete": { "tags": ["Products"], "summary": "Delete a product", "operationId": "deleteProduct", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "204": { "description": "Product deleted" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/products/categories": {
+      "get": { "tags": ["Products"], "summary": "List all categories", "operationId": "listProductCategories", "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/orders": {
+      "get": { "tags": ["Orders"], "summary": "List all orders", "operationId": "listOrders", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/orders/{id}": {
+      "get": { "tags": ["Orders"], "summary": "Retrieve an order", "operationId": "getOrder", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "put": { "tags": ["Orders"], "summary": "Update an order", "operationId": "updateOrder", "parameters": [{ "$ref": "#/components/parameters/id" }], "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/form-submissions": {
+      "get": { "tags": ["Forms"], "summary": "List all form submissions", "operationId": "listFormSubmissions", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/bookings": {
+      "get": { "tags": ["Bookings"], "summary": "List all bookings", "operationId": "listBookings", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/subscriber-lists": {
+      "get": { "tags": ["Subscriber lists"], "summary": "List all subscriber lists", "operationId": "listSubscriberLists", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "post": { "tags": ["Subscriber lists"], "summary": "Create a subscriber list", "operationId": "createSubscriberList", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/subscriber-lists/{id}": {
+      "get": { "tags": ["Subscriber lists"], "summary": "Retrieve a subscriber list", "operationId": "getSubscriberList", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "put": { "tags": ["Subscriber lists"], "summary": "Update a subscriber list", "operationId": "updateSubscriberList", "parameters": [{ "$ref": "#/components/parameters/id" }], "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "delete": { "tags": ["Subscriber lists"], "summary": "Delete a subscriber list", "operationId": "deleteSubscriberList", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "204": { "description": "Subscriber list deleted" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/webhooks": {
+      "get": { "tags": ["Webhooks"], "summary": "List all webhooks", "operationId": "listWebhooks", "responses": { "200": { "$ref": "#/components/responses/ListResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } },
+      "post": { "tags": ["Webhooks"], "summary": "Create a webhook", "operationId": "createWebhook", "requestBody": { "$ref": "#/components/requestBodies/JsonObject" }, "responses": { "200": { "$ref": "#/components/responses/ObjectResponse" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    },
+    "/webhooks/{id}": {
+      "delete": { "tags": ["Webhooks"], "summary": "Delete a webhook", "operationId": "deleteWebhook", "parameters": [{ "$ref": "#/components/parameters/id" }], "responses": { "204": { "description": "Webhook deleted" }, "default": { "$ref": "#/components/responses/ErrorResponse" } } }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "description": "Pass your API key as `Authorization: Bearer <API KEY>`." }
+    },
+    "parameters": {
+      "id": { "name": "id", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Resource ID." },
+      "email": { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" }, "description": "Email address to search for." },
+      "limit": { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 30 }, "description": "Number of items to return." },
+      "skip": { "name": "skip", "in": "query", "schema": { "type": "integer", "minimum": 0, "default": 0 }, "description": "Number of items to skip before returning results." }
+    },
+    "requestBodies": {
+      "JsonObject": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } } }
+    },
+    "responses": {
+      "ListResponse": { "description": "Paginated list response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ListResponse" } } } },
+      "ObjectResponse": { "description": "Object response", "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } } },
+      "ErrorResponse": { "description": "Error response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+    },
+    "schemas": {
+      "ListResponse": { "type": "object", "properties": { "items": { "type": "array", "items": { "type": "object", "additionalProperties": true } }, "totalCount": { "type": "integer" }, "limit": { "type": "integer" }, "skip": { "type": "integer" } } },
+      "ErrorResponse": { "type": "object", "properties": { "success": { "type": "boolean", "const": false }, "message": { "type": "string" } } }
+    }
+  }
+}

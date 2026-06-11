@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "luma",
   "name": "Bosscart by Alavon365",
   "description": "Developer documentation for the Bosscart API and related support resources.",
   "colors": {
@@ -171,9 +171,7 @@
     "drilldown": false
   },
   "fonts": {
-    "heading": {
-      "family": "Inter"
-    }
+    "family": "Inter"
   },
   "markdown": {
     "schema": true

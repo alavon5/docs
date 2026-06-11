@@ -1,0 +1,37 @@
+---
+title: "Authentication"
+description: "Authenticate Bosscart API requests with a bearer token."
+---
+
+Bosscart uses bearer token authentication. Send your API key in the `Authorization` header on every request.
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Required headers
+
+Every request should include:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+User-Agent: YourApp/1.0
+```
+
+The API requires HTTPS. Do not send API keys over plain HTTP.
+
+## Example request
+
+```bash
+curl "https://store.example.com/api/site/products" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "User-Agent: InventorySync/1.0"
+```
+
+## Key handling
+
+<Warning>
+  Do not expose the API key in browser code, mobile apps, public repositories, or shared logs.
+</Warning>
+
+Store the API key in server-side environment variables or a secret manager. Rotate the key if it is exposed.

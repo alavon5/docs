@@ -8,9 +8,6 @@
     "light": "#FFFFFF",
     "dark": "#15803D"
   },
-  "fonts": {
-    "family": "Inter"
-  },
   "favicon": "https://mintlify.s3.us-west-1.amazonaws.com/alavon365/gradient_icon-6787089.png",
   "navigation": {
     "tabs": [
@@ -142,7 +139,36 @@
     "socials": {
       "x": "https://x.com/alavon365",
       "github": "https://github.com/alavon5/docs",
-      "linkedin": "https://linkedin.com/company/alavon356"
+      "linkedin": "https://linkedin.com/company/alavon365",
+      "facebook": "https://facebook.com/alavon365",
+      "website": "https://bosscart.io"
     }
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "assistant",
+      "view",
+      "download-spec",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "grok",
+      "aistudio",
+      "cursor"
+    ],
+    "display": "header"
+  },
+  "interaction": {
+    "drilldown": false
   }
 }

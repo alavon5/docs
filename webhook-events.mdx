@@ -1,0 +1,59 @@
+---
+title: "Webhook event types"
+description: "Reference the Bosscart webhook events you can subscribe to when creating a webhook destination."
+---
+
+Webhook event types define which changes Bosscart sends to your destination URL.
+
+When you create a webhook, pass one or more event names in the `events` array.
+
+```json
+{
+  "target": "https://your-target.com/bosscart/webhooks",
+  "secret": "your-secret",
+  "events": ["order_created", "order_updated"]
+}
+```
+
+## Available events
+
+| Event | Trigger |
+| --- | --- |
+| `order_created` | A new order is created. |
+| `order_updated` | An existing order is updated. |
+| `product_created` | A new product is created. |
+| `product_updated` | An existing product is updated. |
+| `form_submitted` | A website form is submitted. |
+| `contact_updated` | A contact is created or updated. |
+| `booking_created` | A new booking is created. |
+
+## Form submission payload
+
+The `form_submitted` event includes the website, contact, form name, and submitted field values.
+
+```json
+{
+  "website": {
+    "id": 123,
+    "subdomain": "some-subdomain",
+    "systemDomain": "your-system.subdomain.com",
+    "domain": "your-primary-domain.com"
+  },
+  "contact": {},
+  "formName": "Contact Form",
+  "formValues": [
+    {
+      "field": "Email",
+      "value": "customer@example.com"
+    }
+  ]
+}
+```
+
+## Manage subscriptions
+
+Use the webhook endpoints to create, list, and delete webhook destinations.
+
+<Card title="Open webhook endpoints" href="/endpoints/webhooks/list-all-webhooks">
+  Review the generated endpoint docs and test webhook management requests.
+</Card>

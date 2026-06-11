@@ -41,6 +41,17 @@
         ]
       },
       {
+        "tab": "Builder",
+        "groups": [
+          {
+            "group": "Support docs",
+            "pages": [
+              "builder-support"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "openapi": {
           "source": "openapi.json",

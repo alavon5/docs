@@ -1,0 +1,14 @@
+@media (min-width: 1024px) {
+  [data-docs-theme="luma"] #sidebar-content {
+    width: 17.5rem !important;
+  }
+
+  [data-docs-theme="luma"] .lg\:pl-56 {
+    padding-left: 17.5rem !important;
+  }
+
+  [data-docs-theme="luma"] .sidebar-group a {
+    column-gap: 0.625rem;
+    padding-right: 0.5rem;
+  }
+}

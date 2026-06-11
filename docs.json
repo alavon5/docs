@@ -5,7 +5,7 @@
   "colors": {
     "primary": "#003CFE",
     "light": "#FFFFFF",
-    "dark": "#15803D",
+    "dark": "#15803D"
   },
   "fonts": {
     "family": "Questrial",
@@ -21,19 +21,21 @@
             "group": "Get Started",
             "pages": [
               "introduction",
-              "quickstart",
-              "development"
+              "quickstart"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "API guides",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "authentication",
+              "pagination-and-errors",
+              "webhooks-overview"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "support-resources"
             ]
           }
         ]
@@ -42,18 +44,9 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Bosscart API",
             "pages": [
               "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
             ]
           }
         ]
@@ -62,14 +55,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
+          "anchor": "Help Center",
+          "href": "https://help.alavon365.com/",
+          "icon": "circle-question"
         },
         {
           "anchor": "Blog",
@@ -87,7 +75,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@alavon365.com"
+        "href": "https://help.alavon365.com/"
       }
     ],
     "primary": {

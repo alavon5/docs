@@ -1,9 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Bosscart API",
-    "description": "REST API to retrieve and manage contacts, members, member groups, products, orders, bookings, subscriber lists, form submissions, and webhooks.\n\nAuthenticate requests with `Authorization: Bearer <API KEY>` and include a `User-Agent` header. Use your website domain or system domain as the `{domain}` server variable.",
-    "version": "1.0.0"
+    "title": "Website API",
+    "description": "Simple REST API to retrieve and manage contacts, form messages, store\nproducts, orders, bookings, subscriber lists and webhooks.\n\n## Authentication\n\nThe API uses **[Bearer Token Authorization](https://tools.ietf.org/html/rfc6750)**.\n\n1. View your API key in your website &gt; **Website Settings** &gt; **Applications** &gt; **API Key**.\n2. Pass it on every request via the `Authorization` header: `Authorization: Bearer <API KEY>`.\n3. All API requests must be made over HTTPS.\n4. All API clients must include a `User-Agent` header identifying themselves, e.g. `MyApp/1.0.1`.\n\n## Errors\n\nThe API uses conventional HTTP response codes. Codes in the **2xx** range\nindicate success; **4xx** codes indicate a request error (e.g. a required\nparameter was omitted or a resource was missing); **5xx** codes indicate a\nserver error or an unprocessable entry. Every error includes a\nhuman-readable message, e.g. `{ \"success\": false, \"message\": \"Error message...\" }`.\n\n## Pagination\n\nMost endpoints returning lists support pagination via the `limit`\n(1&ndash;50, default 30) and `skip` (a.k.a. offset, default 0) query\nparameters. Paginated responses share a common envelope of `items`,\n`totalCount`, `limit` and `skip`.\n"
   },
   "servers": [
     {
@@ -11,8 +10,8 @@
       "description": "Your website API base URL",
       "variables": {
         "domain": {
-          "default": "your-domain.com",
-          "description": "Your website domain or system domain"
+          "default": "your-domain",
+          "description": "Your website's domain or system domain"
         }
       }
     }
@@ -23,362 +22,2965 @@
     }
   ],
   "tags": [
-    { "name": "Contacts", "description": "Visitors identified by email." },
-    { "name": "Members", "description": "Registered users in your website." },
-    { "name": "Member groups", "description": "Groups that members belong to." },
-    { "name": "Products", "description": "Items, services, or memberships for sale." },
-    { "name": "Orders", "description": "Orders placed on your website." },
-    { "name": "Forms", "description": "Form submissions from your website." },
-    { "name": "Bookings", "description": "Scheduled events and booking details." },
-    { "name": "Subscriber lists", "description": "Email marketing lists." },
-    { "name": "Webhooks", "description": "Webhook destinations and event notifications." }
+    {
+      "name": "Contacts",
+      "description": "Contacts are all visitors identified by their email in your website."
+    },
+    {
+      "name": "Members",
+      "description": "Members are registered users in your website."
+    },
+    {
+      "name": "Member groups",
+      "description": "Member groups are groups which the members belong to. Access to resources can be restricted to specific member groups only."
+    },
+    {
+      "name": "Products",
+      "description": "Products are individual items, services or memberships for sale in your store."
+    },
+    {
+      "name": "Orders",
+      "description": "Access orders made in your website."
+    },
+    {
+      "name": "Forms",
+      "description": "Access all form submissions in the website."
+    },
+    {
+      "name": "Bookings",
+      "description": "Access the details of all scheduled events via the booking features of each website or funnel."
+    },
+    {
+      "name": "Subscriber lists",
+      "description": "Manage email marketing lists."
+    },
+    {
+      "name": "Webhooks",
+      "description": "Webhooks push automated notifications to your destination URL when important events occur in your website."
+    }
   ],
   "paths": {
     "/contacts": {
       "get": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "List all contacts",
-        "description": "Get a paginated list of contacts created in your website.",
+        "description": "Get a paginated list of all contacts created in your website. Optionally filter by created date.",
         "operationId": "listContacts",
         "parameters": [
-          { "$ref": "#/components/parameters/createdAtMin" },
-          { "$ref": "#/components/parameters/createdAtMax" },
-          { "$ref": "#/components/parameters/limit" },
-          { "$ref": "#/components/parameters/skip" }
+          {
+            "name": "created_at_min",
+            "in": "query",
+            "required": false,
+            "description": "List only contacts created after the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "name": "created_at_max",
+            "in": "query",
+            "required": false,
+            "description": "List only contacts created before the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
         ],
         "responses": {
-          "200": { "$ref": "#/components/responses/ContactListResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "A paginated list of contacts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactList"
+                }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Create or update a contact",
-        "description": "Create a contact. If a contact with the supplied email already exists, it is updated.",
-        "operationId": "createOrUpdateContact",
-        "requestBody": { "$ref": "#/components/requestBodies/ContactInput" },
+        "description": "Create a contact. If a contact with the supplied email already exists, it will be updated. Only supplied parameters are set.",
+        "operationId": "createContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "$ref": "#/components/responses/ContactResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The created or updated contact.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/contacts/search-by-email": {
       "get": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Search contact by email",
         "operationId": "searchContactByEmail",
-        "parameters": [{ "$ref": "#/components/parameters/email" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EmailQuery"
+          }
+        ],
         "responses": {
-          "200": { "$ref": "#/components/responses/ContactResponse" },
-          "404": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The matching contact.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
     "/contacts/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/id" }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the contact.",
+          "schema": {
+            "type": "integer",
+            "example": 123
+          }
+        }
+      ],
       "get": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Retrieve a contact",
         "operationId": "getContact",
         "responses": {
-          "200": { "$ref": "#/components/responses/ContactResponse" },
-          "404": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "A single contact.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       },
       "put": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Update a contact",
-        "description": "Update a single contact. Only supplied fields are set.",
+        "description": "Update a single contact. Only non-empty fields are set.",
         "operationId": "updateContact",
-        "requestBody": { "$ref": "#/components/requestBodies/ContactInput" },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "$ref": "#/components/responses/ContactResponse" },
-          "404": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The updated contact.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       },
       "delete": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Delete a contact",
+        "description": "Deletes the contact and all data associated with it.",
         "operationId": "deleteContact",
         "responses": {
-          "200": { "$ref": "#/components/responses/SuccessResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
         }
       }
     },
     "/members": {
       "get": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "List all members",
+        "description": "Get a paginated list of all members in your website. Optionally filter by group id.",
         "operationId": "listMembers",
         "parameters": [
-          { "name": "groupId", "in": "query", "description": "List only members in the specified group.", "schema": { "type": "integer", "example": 12 } },
-          { "$ref": "#/components/parameters/limit" },
-          { "$ref": "#/components/parameters/skip" }
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "description": "List only members in the specified group.",
+            "schema": {
+              "type": "integer",
+              "example": 12
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
         ],
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberListResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "A paginated list of members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberList"
+                }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "Create a member",
+        "description": "Create a new member. If a password is provided, the member is created\nwith that password. Otherwise the member is created with a random\npassword and a password-reset email is sent to the member.\n",
         "operationId": "createMember",
-        "requestBody": { "$ref": "#/components/requestBodies/MemberInput" },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The created member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/members/search-by-email": {
       "get": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "Search member by email",
         "operationId": "searchMemberByEmail",
-        "parameters": [{ "$ref": "#/components/parameters/email" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EmailQuery"
+          }
+        ],
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberResponse" },
-          "404": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The matching member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
     "/members/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/id" }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the member.",
+          "schema": {
+            "type": "integer",
+            "example": 111
+          }
+        }
+      ],
       "get": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "Retrieve a member",
         "operationId": "getMember",
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberResponse" },
-          "404": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "A single member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       },
       "put": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "Update a member",
-        "description": "Update a single member. The member password is not updated.",
+        "description": "Update a single member. Only non-empty fields are set. The member password will NOT be updated.",
         "operationId": "updateMember",
-        "requestBody": { "$ref": "#/components/requestBodies/MemberInput" },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberResponse" },
-          "404": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The updated member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       },
       "delete": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "Delete a member",
         "operationId": "deleteMember",
         "responses": {
-          "200": { "$ref": "#/components/responses/SuccessResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
         }
       }
     },
     "/members/start-session": {
       "post": {
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "summary": "Start a single sign-on session",
+        "description": "If you already have your own authentication mechanism, Single Sign-On\nallows your authenticated members to directly access the member area\nwithout logging in again.\n\nCall this endpoint from your backend and redirect the member to the\n`accessUrl` from the response. Optionally pass `path` to direct the\nmember to a specific page. The `accessUrl` is valid for 15 minutes.\n",
         "operationId": "startMemberSession",
-        "requestBody": { "$ref": "#/components/requestBodies/StartSessionInput" },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartSessionInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "$ref": "#/components/responses/SessionResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "A session token and access URL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/member-groups": {
       "get": {
-        "tags": ["Member groups"],
+        "tags": [
+          "Member groups"
+        ],
         "summary": "List all member groups",
         "operationId": "listMemberGroups",
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberGroupListResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "A list of member groups.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberGroup"
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags": ["Member groups"],
+        "tags": [
+          "Member groups"
+        ],
         "summary": "Create a member group",
         "operationId": "createMemberGroup",
-        "requestBody": { "$ref": "#/components/requestBodies/MemberGroupInput" },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberGroupInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "$ref": "#/components/responses/MemberGroupResponse" },
-          "default": { "$ref": "#/components/responses/ErrorResponse" }
+          "200": {
+            "description": "The created member group.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberGroup"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/member-groups/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/id" }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the member group.",
+          "schema": {
+            "type": "integer",
+            "example": 111
+          }
+        }
+      ],
       "get": {
-        "tags": ["Member groups"],
+        "tags": [
+          "Member groups"
+        ],
         "summary": "Retrieve a member group",
         "operationId": "getMemberGroup",
-        "responses": { "200": { "$ref": "#/components/responses/MemberGroupResponse" } }
+        "responses": {
+          "200": {
+            "description": "A single member group.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberGroup"
+                }
+              }
+            }
+          }
+        }
       },
       "put": {
-        "tags": ["Member groups"],
+        "tags": [
+          "Member groups"
+        ],
         "summary": "Update a member group",
         "operationId": "updateMemberGroup",
-        "requestBody": { "$ref": "#/components/requestBodies/MemberGroupInput" },
-        "responses": { "200": { "$ref": "#/components/responses/MemberGroupResponse" } }
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberGroupInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated member group.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberGroup"
+                }
+              }
+            }
+          }
+        }
       },
       "delete": {
-        "tags": ["Member groups"],
+        "tags": [
+          "Member groups"
+        ],
         "summary": "Delete a member group",
         "operationId": "deleteMemberGroup",
-        "responses": { "200": { "$ref": "#/components/responses/SuccessResponse" } }
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        }
       }
     },
     "/products": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "List all products",
+        "description": "Get a paginated list of all products in your website. Optionally filter by category or product name.",
         "operationId": "listProducts",
         "parameters": [
-          { "name": "category_id", "in": "query", "description": "List only products in the specified category.", "schema": { "type": "integer", "example": 12 } },
-          { "name": "title", "in": "query", "description": "List only products containing the specified string in the title.", "schema": { "type": "string", "example": "shirt" } },
-          { "$ref": "#/components/parameters/limit" },
-          { "$ref": "#/components/parameters/skip" }
+          {
+            "name": "category_id",
+            "in": "query",
+            "required": false,
+            "description": "List only products in the specified category (includes all products in the subcategories, if any).",
+            "schema": {
+              "type": "integer",
+              "example": 12
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "description": "List only products containing the specified string in their title.",
+            "schema": {
+              "type": "string",
+              "example": "shirt"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
         ],
-        "responses": { "200": { "$ref": "#/components/responses/ProductListResponse" } }
+        "responses": {
+          "200": {
+            "description": "A paginated list of products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductList"
+                }
+              }
+            }
+          }
+        }
       },
       "post": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Create a product",
+        "description": "Create a product. Set `update_existing_product_by_url` to `true` to find an existing product with the same URL and update it instead.",
         "operationId": "createProduct",
-        "requestBody": { "$ref": "#/components/requestBodies/ProductInput" },
-        "responses": { "200": { "$ref": "#/components/responses/ProductResponse" } }
+        "parameters": [
+          {
+            "name": "update_existing_product_by_url",
+            "in": "query",
+            "required": false,
+            "description": "If true and a product with the same URL exists, the existing product is updated instead.",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created or updated product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/categories": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List all categories",
+        "description": "Get a list of all categories in the store.",
+        "operationId": "listCategories",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "query",
+            "required": false,
+            "description": "List only direct sub-categories of the provided parent.",
+            "schema": {
+              "type": "integer",
+              "example": 12
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of store categories.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/products/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/id" }],
-      "get": { "tags": ["Products"], "summary": "Retrieve a product", "operationId": "getProduct", "responses": { "200": { "$ref": "#/components/responses/ProductResponse" } } },
-      "put": { "tags": ["Products"], "summary": "Update a product", "operationId": "updateProduct", "requestBody": { "$ref": "#/components/requestBodies/ProductInput" }, "responses": { "200": { "$ref": "#/components/responses/ProductResponse" } } },
-      "delete": { "tags": ["Products"], "summary": "Delete a product", "operationId": "deleteProduct", "responses": { "200": { "$ref": "#/components/responses/SuccessResponse" } } }
-    },
-    "/products/categories": {
-      "get": { "tags": ["Products"], "summary": "List all categories", "operationId": "listProductCategories", "responses": { "200": { "$ref": "#/components/responses/ProductCategoryListResponse" } } }
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the product.",
+          "schema": {
+            "type": "integer",
+            "example": 111
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Retrieve a product",
+        "operationId": "getProduct",
+        "responses": {
+          "200": {
+            "description": "A single product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update a product",
+        "description": "Update a single product. Only non-empty fields or provided variants are set.",
+        "operationId": "updateProduct",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete a product",
+        "operationId": "deleteProduct",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        }
+      }
     },
     "/orders": {
-      "get": { "tags": ["Orders"], "summary": "List all orders", "operationId": "listOrders", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/OrderListResponse" } } }
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "List all orders",
+        "description": "Get a paginated list of all orders created in your website. Optionally filter by created date.",
+        "operationId": "listOrders",
+        "parameters": [
+          {
+            "name": "created_at_min",
+            "in": "query",
+            "required": false,
+            "description": "List only orders created after the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "name": "created_at_max",
+            "in": "query",
+            "required": false,
+            "description": "List only orders created before the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of orders.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderList"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "/orders/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/id" }],
-      "get": { "tags": ["Orders"], "summary": "Retrieve an order", "operationId": "getOrder", "responses": { "200": { "$ref": "#/components/responses/OrderResponse" } } },
-      "put": { "tags": ["Orders"], "summary": "Update an order", "operationId": "updateOrder", "requestBody": { "$ref": "#/components/requestBodies/OrderUpdate" }, "responses": { "200": { "$ref": "#/components/responses/OrderResponse" } } }
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the order.",
+          "schema": {
+            "type": "integer",
+            "example": 1234
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieve an order",
+        "operationId": "getOrder",
+        "responses": {
+          "200": {
+            "description": "A single order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Update an order",
+        "description": "Update a single order's details. Only non-empty fields are set.\nAvailable order statuses are `PENDING`, `SHIPPED`, `COMPLETED`,\n`CANCELED` and `ARCHIVED`.\n\nIf the order has digital downloads or membership products and the\nstatus is set to `COMPLETED`, the customer receives an email with\naccess to their digital content.\n",
+        "operationId": "updateOrder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     },
     "/form-submissions": {
-      "get": { "tags": ["Forms"], "summary": "List all form submissions", "operationId": "listFormSubmissions", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/FormSubmissionListResponse" } } }
+      "get": {
+        "tags": [
+          "Forms"
+        ],
+        "summary": "List all form submissions",
+        "description": "Get a paginated list of all form submissions in the website.",
+        "operationId": "listFormSubmissions",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "List only form submissions created after the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "List only form submissions created before the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of form submissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormSubmissionList"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "/bookings": {
-      "get": { "tags": ["Bookings"], "summary": "List all bookings", "operationId": "listBookings", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/BookingListResponse" } } }
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "List all bookings",
+        "description": "Get a paginated list of booked sessions in the website / funnel.",
+        "operationId": "listBookings",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "List only bookings starting after the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "List only bookings starting before the specified timestamp (inclusive, in seconds since the Unix epoch).",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1573251649
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": false,
+            "description": "List only bookings with the selected event id.",
+            "schema": {
+              "type": "integer",
+              "example": 123
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of bookings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingList"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "/subscriber-lists": {
-      "get": { "tags": ["Subscriber lists"], "summary": "List all subscriber lists", "operationId": "listSubscriberLists", "parameters": [{ "$ref": "#/components/parameters/limit" }, { "$ref": "#/components/parameters/skip" }], "responses": { "200": { "$ref": "#/components/responses/SubscriberListListResponse" } } },
-      "post": { "tags": ["Subscriber lists"], "summary": "Create a subscriber list", "operationId": "createSubscriberList", "requestBody": { "$ref": "#/components/requestBodies/SubscriberListInput" }, "responses": { "200": { "$ref": "#/components/responses/SubscriberListResponse" } } }
+      "get": {
+        "tags": [
+          "Subscriber lists"
+        ],
+        "summary": "List all subscriber lists",
+        "operationId": "listSubscriberLists",
+        "responses": {
+          "200": {
+            "description": "A list of subscriber lists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubscriberList"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Subscriber lists"
+        ],
+        "summary": "Create a subscriber list",
+        "description": "Create a subscriber list for email marketing purposes.",
+        "operationId": "createSubscriberList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriberListInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created subscriber list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriberList"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "/subscriber-lists/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/id" }],
-      "get": { "tags": ["Subscriber lists"], "summary": "Retrieve a subscriber list", "operationId": "getSubscriberList", "responses": { "200": { "$ref": "#/components/responses/SubscriberListResponse" } } },
-      "put": { "tags": ["Subscriber lists"], "summary": "Update a subscriber list", "operationId": "updateSubscriberList", "requestBody": { "$ref": "#/components/requestBodies/SubscriberListInput" }, "responses": { "200": { "$ref": "#/components/responses/SubscriberListResponse" } } },
-      "delete": { "tags": ["Subscriber lists"], "summary": "Delete a subscriber list", "operationId": "deleteSubscriberList", "responses": { "200": { "$ref": "#/components/responses/SuccessResponse" } } }
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the subscriber list.",
+          "schema": {
+            "type": "integer",
+            "example": 87647751
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Subscriber lists"
+        ],
+        "summary": "Retrieve a subscriber list",
+        "operationId": "getSubscriberList",
+        "responses": {
+          "200": {
+            "description": "A single subscriber list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriberList"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Subscriber lists"
+        ],
+        "summary": "Update a subscriber list",
+        "operationId": "updateSubscriberList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriberListInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated subscriber list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriberList"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Subscriber lists"
+        ],
+        "summary": "Delete a subscriber list",
+        "operationId": "deleteSubscriberList",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        }
+      }
     },
     "/webhooks": {
-      "get": { "tags": ["Webhooks"], "summary": "List all webhooks", "operationId": "listWebhooks", "responses": { "200": { "$ref": "#/components/responses/WebhookListResponse" } } },
-      "post": { "tags": ["Webhooks"], "summary": "Create a webhook", "operationId": "createWebhook", "requestBody": { "$ref": "#/components/requestBodies/WebhookInput" }, "responses": { "200": { "$ref": "#/components/responses/WebhookResponse" } } }
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "List all webhooks",
+        "operationId": "listWebhooks",
+        "responses": {
+          "200": {
+            "description": "A list of webhooks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Webhook"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Create a webhook",
+        "operationId": "createWebhook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created webhook.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "/webhooks/{id}": {
-      "parameters": [{ "$ref": "#/components/parameters/webhookId" }],
-      "delete": { "tags": ["Webhooks"], "summary": "Delete a webhook", "operationId": "deleteWebhook", "responses": { "200": { "$ref": "#/components/responses/SuccessResponse" } } }
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The id of the webhook.",
+          "schema": {
+            "type": "string",
+            "example": "rh_4ac124dde21"
+          }
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Delete a webhook",
+        "operationId": "deleteWebhook",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "order_created": {
+      "post": {
+        "operationId": "onOrderCreated",
+        "summary": "New order created",
+        "description": "Fired when a new order is placed on the website.",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/WebhookOrder"
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
+    },
+    "order_updated": {
+      "post": {
+        "operationId": "onOrderUpdated",
+        "summary": "Order updated",
+        "description": "Fired when an order is updated.",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/WebhookOrder"
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
+    },
+    "product_created": {
+      "post": {
+        "operationId": "onProductCreated",
+        "summary": "New product created",
+        "description": "Fired when a new product is created.",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/WebhookProduct"
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
+    },
+    "product_updated": {
+      "post": {
+        "operationId": "onProductUpdated",
+        "summary": "Product updated",
+        "description": "Fired when a product is updated.",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/WebhookProduct"
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
+    },
+    "form_submitted": {
+      "post": {
+        "operationId": "onFormSubmitted",
+        "summary": "New form submission",
+        "description": "Fired when a form is submitted.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormSubmissionWebhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
+    },
+    "contact_updated": {
+      "post": {
+        "operationId": "onContactUpdated",
+        "summary": "New contact activity",
+        "description": "Fired when a new contact is created or an existing contact is updated.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contact"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
+    },
+    "booking_created": {
+      "post": {
+        "operationId": "onBookingCreated",
+        "summary": "New booking created",
+        "description": "Fired when a new booking is created.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Booking"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 2xx status to acknowledge receipt."
+          }
+        }
+      }
     }
   },
   "components": {
     "securitySchemes": {
-      "bearerAuth": { "type": "http", "scheme": "bearer", "description": "Pass your API key as `Authorization: Bearer <API KEY>`." }
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Pass your API key as: `Authorization: Bearer <API KEY>`."
+      }
     },
     "parameters": {
-      "id": { "name": "id", "in": "path", "required": true, "description": "Resource ID.", "schema": { "type": "integer", "example": 123 } },
-      "webhookId": { "name": "id", "in": "path", "required": true, "description": "Webhook ID.", "schema": { "type": "string", "example": "rh_24488493954" } },
-      "email": { "name": "email", "in": "query", "required": true, "description": "Email address to search for.", "schema": { "type": "string", "format": "email", "example": "john@doe.com" } },
-      "limit": { "name": "limit", "in": "query", "description": "Number of items to return.", "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 30 } },
-      "skip": { "name": "skip", "in": "query", "description": "Number of items to skip before returning results.", "schema": { "type": "integer", "minimum": 0, "default": 0 } },
-      "createdAtMin": { "name": "created_at_min", "in": "query", "description": "List only resources created after this Unix timestamp.", "schema": { "type": "integer", "format": "int64", "example": 1573251649 } },
-      "createdAtMax": { "name": "created_at_max", "in": "query", "description": "List only resources created before this Unix timestamp.", "schema": { "type": "integer", "format": "int64", "example": 1573251649 } }
-    },
-    "requestBodies": {
-      "ContactInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactInput" } } } },
-      "MemberInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MemberInput" } } } },
-      "StartSessionInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StartSessionInput" } } } },
-      "MemberGroupInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MemberGroupInput" } } } },
-      "ProductInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductInput" } } } },
-      "OrderUpdate": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/OrderUpdate" } } } },
-      "SubscriberListInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriberListInput" } } } },
-      "WebhookInput": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WebhookInput" } } } }
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "A limit on the number of objects to be returned. Between 1 and 50.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 30,
+          "example": 25
+        }
+      },
+      "Skip": {
+        "name": "skip",
+        "in": "query",
+        "required": false,
+        "description": "The number of items to skip (offset). Defaults to 0, i.e. the first page.",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "example": 25
+        }
+      },
+      "EmailQuery": {
+        "name": "email",
+        "in": "query",
+        "required": true,
+        "description": "The email address to look for.",
+        "schema": {
+          "type": "string",
+          "format": "email",
+          "example": "john@doe.com"
+        }
+      }
     },
     "responses": {
-      "SuccessResponse": { "description": "Success response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Success" } } } },
-      "ErrorResponse": { "description": "Error response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-      "ContactResponse": { "description": "A contact.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Contact" } } } },
-      "ContactListResponse": { "description": "A paginated list of contacts.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactList" } } } },
-      "MemberResponse": { "description": "A member.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member" } } } },
-      "MemberListResponse": { "description": "A paginated list of members.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MemberList" } } } },
-      "SessionResponse": { "description": "A session token and access URL.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Session" } } } },
-      "MemberGroupResponse": { "description": "A member group.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MemberGroup" } } } },
-      "MemberGroupListResponse": { "description": "A list of member groups.", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MemberGroup" } } } } },
-      "ProductResponse": { "description": "A product.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Product" } } } },
-      "ProductListResponse": { "description": "A paginated list of products.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductList" } } } },
-      "ProductCategoryListResponse": { "description": "A list of product categories.", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ProductCategory" } } } } },
-      "OrderResponse": { "description": "An order.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Order" } } } },
-      "OrderListResponse": { "description": "A paginated list of orders.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/OrderList" } } } },
-      "FormSubmissionListResponse": { "description": "A paginated list of form submissions.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FormSubmissionList" } } } },
-      "BookingListResponse": { "description": "A paginated list of bookings.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BookingList" } } } },
-      "SubscriberListResponse": { "description": "A subscriber list.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriberList" } } } },
-      "SubscriberListListResponse": { "description": "A paginated list of subscriber lists.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubscriberListList" } } } },
-      "WebhookResponse": { "description": "A webhook.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Webhook" } } } },
-      "WebhookListResponse": { "description": "A list of webhooks.", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Webhook" } } } } }
+      "NotFound": {
+        "description": "The requested resource was not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Success": {
+        "description": "The operation succeeded.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SuccessMessage"
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "WebhookOrder": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        }
+      },
+      "WebhookProduct": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      }
     },
     "schemas": {
-      "Success": { "type": "object", "properties": { "success": { "type": "boolean", "example": true } } },
-      "ErrorResponse": { "type": "object", "properties": { "success": { "type": "boolean", "const": false }, "message": { "type": "string", "example": "Error message..." } } },
-      "PaginationMeta": { "type": "object", "properties": { "totalCount": { "type": "integer", "example": 123 }, "limit": { "type": "integer", "example": 30 }, "skip": { "type": "integer", "example": 0 } } },
-      "NameValue": { "type": "object", "properties": { "name": { "type": "string", "example": "Color" }, "value": { "type": "string", "example": "Blue" } } },
-      "FieldValue": { "type": "object", "properties": { "field": { "type": "string", "example": "Email" }, "value": { "type": "string", "example": "john@doe.com" } } },
-      "Address": { "type": "object", "properties": { "address": { "type": "string" }, "city": { "type": "string" }, "state": { "type": "string" }, "zip": { "type": "string" }, "country": { "type": "string" } } },
-      "ContactProperty": { "type": "object", "properties": { "name": { "type": "string", "example": "Favorite color" }, "value": { "type": "string", "example": "Blue" } } },
-      "ContactInput": { "type": "object", "properties": { "email": { "type": "string", "format": "email", "example": "john@doe.com" }, "name": { "type": "string", "example": "John Doe" }, "phone": { "type": "string", "example": "+123456789" }, "note": { "type": "string" }, "address": { "type": "string" }, "city": { "type": "string" }, "state": { "type": "string" }, "zip": { "type": "string" }, "country": { "type": "string" }, "companyName": { "type": "string" }, "properties": { "type": "array", "items": { "$ref": "#/components/schemas/ContactProperty" } } }, "required": ["email"] },
-      "Contact": { "allOf": [{ "$ref": "#/components/schemas/ContactInput" }, { "type": "object", "properties": { "id": { "type": "integer", "description": "Unique identifier.", "example": 123 }, "createdOn": { "type": "integer", "format": "int64", "example": 1573240303 } } }] },
-      "ContactList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Contact" } } } }] },
-      "MemberInput": { "type": "object", "properties": { "email": { "type": "string", "format": "email", "example": "member@example.com" }, "name": { "type": "string", "example": "Jane Member" }, "phone": { "type": "string" }, "password": { "type": "string", "description": "Optional when creating a member." }, "groups": { "type": "array", "items": { "type": "integer" }, "example": [12, 15] } }, "required": ["email", "name"] },
-      "Member": { "allOf": [{ "$ref": "#/components/schemas/MemberInput" }, { "type": "object", "properties": { "id": { "type": "integer", "example": 111 }, "createdOn": { "type": "integer", "format": "int64" } } }] },
-      "MemberList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Member" } } } }] },
-      "StartSessionInput": { "type": "object", "properties": { "email": { "type": "string", "format": "email", "example": "member@example.com" }, "path": { "type": "string", "description": "Optional page path to open after login.", "example": "/members-area" } }, "required": ["email"] },
-      "Session": { "type": "object", "properties": { "token": { "type": "string" }, "accessUrl": { "type": "string", "format": "uri", "example": "https://your-domain.com/member-login/session-token" } } },
-      "MemberGroupInput": { "type": "object", "properties": { "name": { "type": "string", "example": "VIP customers" } }, "required": ["name"] },
-      "MemberGroup": { "allOf": [{ "$ref": "#/components/schemas/MemberGroupInput" }, { "type": "object", "properties": { "id": { "type": "integer", "example": 111 }, "members": { "type": "integer", "example": 24 } } }] },
-      "ProductCategory": { "type": "object", "properties": { "id": { "type": "integer", "example": 12 }, "name": { "type": "string", "example": "Shoes" }, "parentId": { "type": ["integer", "null"], "example": null } } },
-      "ProductVariant": { "type": "object", "properties": { "sku": { "type": "string" }, "price": { "type": "number", "example": 49 }, "quantity": { "type": "integer", "example": 10 }, "options": { "type": "array", "items": { "$ref": "#/components/schemas/NameValue" } } } },
-      "ProductInput": { "type": "object", "properties": { "title": { "type": "string", "example": "Running Shoes" }, "url": { "type": "string", "example": "running-shoes" }, "description": { "type": "string" }, "price": { "type": "number", "example": 49 }, "type": { "type": "string", "enum": ["physical", "digital", "service", "membership"], "example": "physical" }, "sku": { "type": "string" }, "categoryIds": { "type": "array", "items": { "type": "integer" }, "example": [12] }, "images": { "type": "array", "items": { "type": "string", "format": "uri" } }, "variants": { "type": "array", "items": { "$ref": "#/components/schemas/ProductVariant" } } }, "required": ["title"] },
-      "Product": { "allOf": [{ "$ref": "#/components/schemas/ProductInput" }, { "type": "object", "properties": { "id": { "type": "integer", "example": 24 }, "createdOn": { "type": "integer", "format": "int64" } } }] },
-      "ProductList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Product" } } } }] },
-      "OrderItem": { "type": "object", "properties": { "id": { "type": "integer", "example": 123 }, "name": { "type": "string", "example": "Running Shoes" }, "url": { "type": "string", "example": "running-shoes" }, "productId": { "type": "integer", "example": 24 }, "type": { "type": "string", "enum": ["physical", "digital", "service", "membership"] }, "sku": { "type": ["string", "null"] }, "quantity": { "type": "integer", "example": 1 }, "total": { "type": "number", "example": 49 }, "images": { "type": "array", "items": { "type": "string", "format": "uri" } } } },
-      "Order": { "type": "object", "properties": { "id": { "type": "integer", "example": 1234 }, "invoiceNo": { "type": "integer", "example": 15 }, "created": { "type": "integer", "format": "int64", "example": 1573397217 }, "customerName": { "type": "string", "example": "John Doe" }, "customerEmail": { "type": "string", "format": "email", "example": "john@email.com" }, "contactId": { "type": "integer" }, "memberId": { "type": "integer" }, "shippingAddress": { "$ref": "#/components/schemas/Address" }, "billingAddress": { "$ref": "#/components/schemas/Address" }, "subTotal": { "type": "number", "example": 49 }, "total": { "type": "number", "example": 49 }, "paid": { "type": "boolean" }, "paymentMethod": { "type": "string", "example": "stripe" }, "transactionId": { "type": "string" }, "status": { "type": "string", "enum": ["pending", "shipped", "completed", "canceled", "archived"], "example": "completed" }, "items": { "type": "array", "items": { "$ref": "#/components/schemas/OrderItem" } }, "tags": { "type": "array", "items": { "type": "string" } }, "additionalFields": { "type": "array", "items": { "$ref": "#/components/schemas/FieldValue" } } } },
-      "OrderUpdate": { "type": "object", "properties": { "customerName": { "type": "string" }, "customerEmail": { "type": "string", "format": "email" }, "billingAddress": { "$ref": "#/components/schemas/Address" }, "shippingAddress": { "$ref": "#/components/schemas/Address" }, "paymentMethod": { "type": "string", "example": "stripe" }, "transactionId": { "type": "string" }, "paid": { "type": "boolean" }, "status": { "type": "string", "enum": ["PENDING", "SHIPPED", "COMPLETED", "CANCELED", "ARCHIVED"] }, "notifyCustomer": { "type": "boolean" } } },
-      "OrderList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Order" } } } }] },
-      "FormSubmission": { "type": "object", "properties": { "name": { "type": "string", "example": "Contact form" }, "received": { "type": "integer", "format": "int64", "example": 1573120479 }, "fields": { "type": "array", "items": { "$ref": "#/components/schemas/NameValue" } } } },
-      "FormSubmissionList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/FormSubmission" } } } }] },
-      "Booking": { "type": "object", "properties": { "id": { "type": "integer", "example": 206 }, "eventId": { "type": "integer", "example": 98146 }, "contactId": { "type": "integer", "example": 41 }, "name": { "type": "string", "example": "Jane Doe" }, "email": { "type": "string", "format": "email", "example": "jane@doe.com" }, "start": { "type": "integer", "format": "int64", "example": 1587936600 }, "end": { "type": "integer", "format": "int64", "example": 1587938400 }, "eventData": { "type": "object", "properties": { "name": { "type": "string", "example": "My event" }, "location": { "type": "string", "example": "Skype" } } }, "operator": { "type": "object", "properties": { "id": { "type": "integer", "example": 51215 }, "name": { "type": "string", "example": "John Doe" }, "email": { "type": "string", "format": "email", "example": "john@doe.com" } } }, "formAnswers": { "type": "array", "items": { "$ref": "#/components/schemas/NameValue" } } } },
-      "BookingList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Booking" } } } }] },
-      "SubscriberListInput": { "type": "object", "properties": { "name": { "type": "string", "example": "New List" } }, "required": ["name"] },
-      "SubscriberList": { "allOf": [{ "$ref": "#/components/schemas/SubscriberListInput" }, { "type": "object", "properties": { "id": { "type": "integer", "example": 87647751 }, "created": { "type": "integer", "format": "int64", "example": 1613384738 }, "subscribers": { "type": "integer", "example": 25 }, "opens": { "type": "number", "example": 0.85 }, "clicks": { "type": "number", "example": 0.41 } } }] },
-      "SubscriberListList": { "allOf": [{ "$ref": "#/components/schemas/PaginationMeta" }, { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/SubscriberList" } } } }] },
-      "WebhookEvent": { "type": "string", "enum": ["order_created", "order_updated", "product_created", "product_updated", "form_submitted", "contact_updated", "booking_created"] },
-      "WebhookInput": { "type": "object", "properties": { "target": { "type": "string", "format": "uri", "example": "https://your-target.com/some-path" }, "secret": { "type": "string", "example": "your-secret" }, "events": { "type": "array", "items": { "$ref": "#/components/schemas/WebhookEvent" }, "example": ["order_created", "order_updated"] } }, "required": ["target", "events"] },
-      "Webhook": { "allOf": [{ "$ref": "#/components/schemas/WebhookInput" }, { "type": "object", "properties": { "id": { "type": "string", "example": "rh_24488493954" } } }] },
-      "WebsiteRef": { "type": "object", "properties": { "id": { "type": "integer", "example": 123 }, "subdomain": { "type": "string", "example": "some-subdomain" }, "systemDomain": { "type": "string", "example": "your-system.subdomain.com" }, "domain": { "type": "string", "example": "your-primary-domain.com" } } },
-      "FormSubmissionWebhook": { "type": "object", "description": "POST payload delivered for the `form_submitted` event.", "properties": { "website": { "$ref": "#/components/schemas/WebsiteRef" }, "contact": { "$ref": "#/components/schemas/Contact" }, "formName": { "type": "string", "example": "Contact Form" }, "formValues": { "type": "array", "items": { "$ref": "#/components/schemas/FieldValue" } } } }
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Resource not found"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ]
+      },
+      "SuccessMessage": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ]
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "description": "Common pagination envelope shared by list endpoints.",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "description": "The total size of the result set without any pagination.",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The currently used limit.",
+            "example": 25
+          },
+          "skip": {
+            "type": "integer",
+            "description": "The current offset in the list.",
+            "example": 0
+          }
+        },
+        "required": [
+          "totalCount",
+          "limit",
+          "skip"
+        ]
+      },
+      "NameValue": {
+        "type": "object",
+        "description": "A generic name/value pair.",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "description": "A billing or shipping address.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of customer (order/customer addresses only)."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone."
+          },
+          "companyName": {
+            "type": "string",
+            "description": "Company name."
+          },
+          "companyId": {
+            "type": "string",
+            "description": "Company identification number."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country, 2-letter ISO 3166 code."
+          },
+          "state": {
+            "type": "string",
+            "description": "State."
+          },
+          "city": {
+            "type": "string",
+            "description": "City."
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "Zip / post code."
+          },
+          "address": {
+            "type": "string",
+            "description": "Street address."
+          },
+          "address2": {
+            "type": "string",
+            "description": "Street address, line 2."
+          }
+        }
+      },
+      "ContactProperty": {
+        "type": "object",
+        "description": "A custom contact property as defined in the CRM section of your website.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "lead_status"
+          },
+          "value": {
+            "type": "string",
+            "example": "contacted"
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 123
+          },
+          "name": {
+            "type": "string",
+            "description": "Contact name.",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the contact.",
+            "example": "john@doe.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone.",
+            "example": "+123456789"
+          },
+          "note": {
+            "type": "string",
+            "description": "Private note."
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "createdOn": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch.",
+            "example": 1573240303
+          },
+          "properties": {
+            "type": "array",
+            "description": "Array of custom properties, as defined in the CRM section of your website.",
+            "items": {
+              "$ref": "#/components/schemas/ContactProperty"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "List of tags assigned to the contact.",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "tag1",
+              "tag2"
+            ]
+          },
+          "memberId": {
+            "type": "integer",
+            "description": "Member id if assigned to contact.",
+            "example": 487
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Whether the contact is a subscriber (for email marketing)."
+          },
+          "subscriberLists": {
+            "type": "array",
+            "description": "Array of subscriber list IDs (email marketing lists).",
+            "items": {
+              "type": "integer"
+            },
+            "example": [
+              0,
+              87647751
+            ]
+          }
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@doe.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+123456789"
+          },
+          "note": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactProperty"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subscribed": {
+            "type": "boolean"
+          },
+          "subscriberLists": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ContactList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 123
+          },
+          "name": {
+            "type": "string",
+            "description": "Member name.",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email of the member.",
+            "example": "john@doe.com"
+          },
+          "groups": {
+            "type": "array",
+            "description": "Member group id(s) to which the member belongs.",
+            "items": {
+              "type": "integer"
+            },
+            "example": [
+              59,
+              98
+            ]
+          },
+          "registeredOn": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch.",
+            "example": 1587489771
+          },
+          "approved": {
+            "type": "boolean",
+            "description": "Member approval status."
+          },
+          "contactId": {
+            "type": "integer",
+            "description": "Contact ID of the member.",
+            "example": 147
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/Address"
+          }
+        }
+      },
+      "MemberInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@doe.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional. If omitted, a random password is set and a reset email is sent. Ignored on update.",
+            "example": "my-password"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/Address"
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
+      },
+      "MemberList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "StartSessionInput": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@doe.com"
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional. Direct the member to a specific page after sign-on.",
+            "example": "/protected-member-only-page"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "xxxxx.xxxxx.xxxxx"
+          },
+          "accessUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Redirect the member here. Valid for 15 minutes.",
+            "example": "https://your-domain/api/site/members/session/xxxxx.xxxxx.xxxxx"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1605283421
+          },
+          "expiresAt": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1605284321
+          }
+        }
+      },
+      "MemberGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the member group.",
+            "example": "Basic Members"
+          },
+          "link": {
+            "type": "string",
+            "description": "Optional default page where members are redirected after a successful login.",
+            "example": ""
+          }
+        }
+      },
+      "MemberGroupInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "New group"
+          },
+          "link": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the category.",
+            "example": "Doors"
+          },
+          "url": {
+            "type": "string",
+            "description": "The category URL (handle) in your store.",
+            "example": "doors"
+          },
+          "parentCategory": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Parent category ID. 0 (or null) if this is the root category.",
+            "example": 0
+          }
+        }
+      },
+      "ProductOption": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the option (e.g. Color, Size, Material).",
+            "example": "Material"
+          },
+          "values": {
+            "type": "array",
+            "description": "List of all possible values for this option.",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Wood",
+              "Glass"
+            ]
+          },
+          "advanced": {
+            "type": "boolean",
+            "description": "Whether different variations of this option have their own price, quantity, SKU or weight."
+          }
+        }
+      },
+      "ProductVariant": {
+        "type": "object",
+        "properties": {
+          "options": {
+            "type": "array",
+            "description": "List of strings identifying this variant by its advanced options, e.g. [\"Wood\", \"Single\"]. Empty when there are no advanced options.",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Wood",
+              "Single"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "example": 199
+          },
+          "onSale": {
+            "type": "boolean"
+          },
+          "regularPrice": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "The regular price, if on sale."
+          },
+          "salePrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "quantity": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Available quantity (null if not tracked)."
+          },
+          "sku": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "D-001"
+          },
+          "weight": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Weight, if tracked."
+          }
+        }
+      },
+      "Subscription": {
+        "type": "object",
+        "description": "Subscription details for a subscription product.",
+        "properties": {
+          "cycles": {
+            "type": "integer",
+            "description": "Number of payment cycles. 0 for ongoing payments."
+          },
+          "period": {
+            "type": "integer",
+            "description": "Subscription period number (e.g. every 1 month)."
+          },
+          "periodUnit": {
+            "type": "string",
+            "enum": [
+              "WEEKLY",
+              "MONTHLY"
+            ]
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 111
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital",
+              "service",
+              "membership"
+            ],
+            "description": "The type of the product."
+          },
+          "title": {
+            "type": "string",
+            "example": "Interior Door"
+          },
+          "description": {
+            "type": "string",
+            "description": "Supports light HTML formatting."
+          },
+          "url": {
+            "type": "string",
+            "description": "The product URL (handle) in your store.",
+            "example": "interior-door"
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Whether the product is hidden in your store front."
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "example": [
+              "https://path-to-image.jpg",
+              "https://path-to-another-image.jpg"
+            ]
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOption"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariant"
+            }
+          },
+          "subscription": {
+            "$ref": "#/components/schemas/Subscription"
+          },
+          "file": {
+            "type": "string",
+            "format": "uri",
+            "description": "Digital products only - URL of the digital file being sold."
+          }
+        }
+      },
+      "ProductInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital",
+              "service",
+              "membership"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "example": "Interior Door"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "example": "interior-door"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOption"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariant"
+            }
+          },
+          "subscription": {
+            "$ref": "#/components/schemas/Subscription"
+          },
+          "file": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
+      },
+      "ProductList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Tax": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Sales Tax"
+          },
+          "total": {
+            "type": "number",
+            "example": 20
+          },
+          "applyToShipping": {
+            "type": "boolean"
+          },
+          "rate": {
+            "type": "number",
+            "example": 10
+          },
+          "type": {
+            "type": "string",
+            "example": "PERCENT"
+          },
+          "appliedToItems": {
+            "type": "array",
+            "description": "Zero-based indices of the order's line items the tax applies to.",
+            "items": {
+              "type": "integer"
+            },
+            "example": [
+              0,
+              1,
+              2
+            ]
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 123
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the product.",
+            "example": "Running Shoes"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the product.",
+            "example": "running-shoes"
+          },
+          "productId": {
+            "type": "integer",
+            "description": "ID of the product.",
+            "example": 24
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital",
+              "service",
+              "membership"
+            ]
+          },
+          "sku": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "SKU of the selected variant."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Purchased quantity.",
+            "example": 1
+          },
+          "total": {
+            "type": "number",
+            "description": "Item total.",
+            "example": 49
+          },
+          "weight": {
+            "type": "number",
+            "description": "Item weight.",
+            "example": 0
+          },
+          "width": {
+            "type": "number",
+            "description": "Item width.",
+            "example": 0
+          },
+          "height": {
+            "type": "number",
+            "description": "Item height.",
+            "example": 0
+          },
+          "length": {
+            "type": "number",
+            "description": "Item length.",
+            "example": 0
+          },
+          "shippingRequired": {
+            "type": "boolean",
+            "description": "Whether this item is a physical product requiring shipping."
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "example": [
+              "https://path-to-image.jpg"
+            ]
+          },
+          "variation": {
+            "type": "array",
+            "description": "Name/value pairs describing the selected variant.",
+            "items": {
+              "$ref": "#/components/schemas/NameValue"
+            }
+          },
+          "additions": {
+            "type": "array",
+            "description": "Name/value pairs of any extra information asked for this item.",
+            "items": {
+              "$ref": "#/components/schemas/NameValue"
+            }
+          }
+        }
+      },
+      "OrderNote": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1686043751
+          },
+          "value": {
+            "type": "string",
+            "example": "Order Note Text Sample"
+          }
+        }
+      },
+      "FieldValue": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier.",
+            "example": 1234
+          },
+          "invoiceNo": {
+            "type": "integer",
+            "description": "Invoice number assigned to the order.",
+            "example": 15
+          },
+          "created": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch (time placed).",
+            "example": 1573397217
+          },
+          "customerName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "customerEmail": {
+            "type": "string",
+            "format": "email",
+            "example": "john@email.com"
+          },
+          "contactId": {
+            "type": "integer",
+            "description": "Unique identifier of the contact that made the order."
+          },
+          "memberId": {
+            "type": "integer",
+            "description": "Unique identifier of the registered member that made the order (if any)."
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "shippingRequired": {
+            "type": "boolean",
+            "description": "Whether the order contains physical products requiring shipping."
+          },
+          "weight": {
+            "type": "number",
+            "description": "Total weight of the order.",
+            "example": 0
+          },
+          "weightUnit": {
+            "type": "string",
+            "description": "Weight unit (kg, lb).",
+            "example": "kg"
+          },
+          "subTotal": {
+            "type": "number",
+            "example": 49
+          },
+          "total": {
+            "type": "number",
+            "example": 49
+          },
+          "discountCode": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Used discount code."
+          },
+          "discountType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "fixed_discount",
+              "percent_discount",
+              "free_shipping",
+              null
+            ],
+            "description": "Type of discount used."
+          },
+          "discountAmount": {
+            "type": "number",
+            "example": 0
+          },
+          "shippingName": {
+            "type": "string",
+            "description": "Shipping method used (if any)."
+          },
+          "shippingAmount": {
+            "type": "number",
+            "description": "Cost of shipping.",
+            "example": 0
+          },
+          "paid": {
+            "type": "boolean",
+            "description": "Whether the order is paid."
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "Payment method used to place the order.",
+            "example": "stripe"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "If paid, the payment transaction id."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "shipped",
+              "completed",
+              "canceled",
+              "archived"
+            ],
+            "description": "Order status. Returned in lowercase; see the Update operation for the accepted uppercase input values.",
+            "example": "completed"
+          },
+          "taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tax"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "List of tags assigned to the order.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalFields": {
+            "type": "array",
+            "description": "Field/value pairs of all additional fields collected with the order.",
+            "items": {
+              "$ref": "#/components/schemas/FieldValue"
+            }
+          },
+          "notes": {
+            "type": "array",
+            "description": "Private notes added to this order (time/value pairs).",
+            "items": {
+              "$ref": "#/components/schemas/OrderNote"
+            }
+          }
+        }
+      },
+      "Fulfillment": {
+        "type": "object",
+        "properties": {
+          "courier": {
+            "type": "string",
+            "description": "The name of the courier service to set.",
+            "example": "UPS"
+          },
+          "trackingNo": {
+            "type": "string",
+            "example": "123456789ABC"
+          },
+          "trackingUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://www.ups.com/mobile/track?trackingNumber=123456789ABC"
+          }
+        }
+      },
+      "OrderUpdate": {
+        "type": "object",
+        "description": "Only non-empty fields are set.",
+        "properties": {
+          "customerName": {
+            "type": "string"
+          },
+          "customerEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "The payment method type, e.g. \"stripe\"."
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "The transaction id uniquely identifying the payment for this order."
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SHIPPED",
+              "COMPLETED",
+              "CANCELED",
+              "ARCHIVED"
+            ],
+            "description": "The order status to set."
+          },
+          "fulfillment": {
+            "$ref": "#/components/schemas/Fulfillment"
+          },
+          "notifyCustomer": {
+            "type": "boolean",
+            "description": "Whether to notify the customer of this change."
+          }
+        }
+      },
+      "OrderList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "FormSubmission": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the submitted form.",
+            "example": "Contact form"
+          },
+          "received": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch (time submitted).",
+            "example": 1573120479
+          },
+          "fields": {
+            "type": "array",
+            "description": "Name/value pairs of all submitted fields.",
+            "items": {
+              "$ref": "#/components/schemas/NameValue"
+            }
+          }
+        }
+      },
+      "FormSubmissionList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FormSubmission"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "EventDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Event name.",
+            "example": "My event"
+          },
+          "location": {
+            "type": "string",
+            "description": "Event location.",
+            "example": "Skype"
+          }
+        }
+      },
+      "Operator": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique operator id.",
+            "example": 51215
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@doe.com"
+          }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique service id."
+          },
+          "name": {
+            "type": "string",
+            "description": "Service name."
+          }
+        }
+      },
+      "Booking": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique booking (session) id.",
+            "example": 206
+          },
+          "eventId": {
+            "type": "integer",
+            "description": "Unique event id.",
+            "example": 98146
+          },
+          "contactId": {
+            "type": "integer",
+            "description": "Unique contact id.",
+            "example": 41
+          },
+          "name": {
+            "type": "string",
+            "description": "Contact name.",
+            "example": "Jane Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Contact email.",
+            "example": "jane@doe.com"
+          },
+          "start": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch (booking start).",
+            "example": 1587936600
+          },
+          "end": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch (booking end).",
+            "example": 1587938400
+          },
+          "eventData": {
+            "$ref": "#/components/schemas/EventDetails"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "service": {
+            "$ref": "#/components/schemas/Service"
+          },
+          "formAnswers": {
+            "type": "array",
+            "description": "Name/value pairs of all form questions answered by the attendee.",
+            "items": {
+              "$ref": "#/components/schemas/NameValue"
+            }
+          }
+        }
+      },
+      "BookingList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "SubscriberList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique list id.",
+            "example": 87647751
+          },
+          "name": {
+            "type": "string",
+            "description": "List name.",
+            "example": "My list"
+          },
+          "created": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in Unix seconds since epoch.",
+            "example": 1613384738
+          },
+          "subscribers": {
+            "type": "integer",
+            "description": "Total number of subscribers in this list.",
+            "example": 25
+          },
+          "opens": {
+            "type": "number",
+            "description": "Open rate (0 to 1).",
+            "example": 0.85
+          },
+          "clicks": {
+            "type": "number",
+            "description": "Click rate (0 to 1).",
+            "example": 0.41
+          }
+        }
+      },
+      "SubscriberListInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "New List"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "WebhookEvent": {
+        "type": "string",
+        "enum": [
+          "order_created",
+          "order_updated",
+          "product_created",
+          "product_updated",
+          "form_submitted",
+          "contact_updated",
+          "booking_created"
+        ]
+      },
+      "Webhook": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier.",
+            "example": "rh_24488493954"
+          },
+          "target": {
+            "type": "string",
+            "format": "uri",
+            "description": "Your destination URL to push notifications to.",
+            "example": "https://your-target.com/some-path"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Use the secret to verify that events posted to your URL were sent by the website.",
+            "example": "your-secret"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            },
+            "example": [
+              "order_created",
+              "order_updated"
+            ]
+          }
+        }
+      },
+      "WebhookInput": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://your-target.com/some-path"
+          },
+          "secret": {
+            "type": "string",
+            "example": "your-secret"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            },
+            "example": [
+              "order_created",
+              "order_updated"
+            ]
+          }
+        },
+        "required": [
+          "target",
+          "events"
+        ]
+      },
+      "WebsiteRef": {
+        "type": "object",
+        "description": "Information about the website where the event originated.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 123
+          },
+          "subdomain": {
+            "type": "string",
+            "example": "some-subdomain"
+          },
+          "systemDomain": {
+            "type": "string",
+            "example": "your-system.subdomain.com"
+          },
+          "domain": {
+            "type": "string",
+            "example": "your-primary-domain.com"
+          }
+        }
+      },
+      "FormSubmissionWebhook": {
+        "type": "object",
+        "description": "POST payload delivered for the `form_submitted` event.",
+        "properties": {
+          "website": {
+            "$ref": "#/components/schemas/WebsiteRef"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "formName": {
+            "type": "string",
+            "example": "Contact Form"
+          },
+          "formValues": {
+            "type": "array",
+            "description": "Field/value pairs of all submitted fields.",
+            "items": {
+              "$ref": "#/components/schemas/FieldValue"
+            }
+          }
+        }
+      }
     }
   }
 }

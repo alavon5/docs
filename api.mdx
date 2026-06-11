@@ -1,0 +1,46 @@
+---
+title: "API guide"
+description: "Start here to authenticate, make requests, handle pagination, and find Bosscart API endpoints."
+---
+
+Use this guide to make your first Bosscart API request, understand authentication, and choose the endpoints you need.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" href="/quickstart">
+    Make your first authenticated request and retrieve contacts from a Bosscart website.
+  </Card>
+  <Card title="Authentication" href="/authentication">
+    Learn how to send your API key with each request and keep credentials private.
+  </Card>
+  <Card title="Pagination and errors" href="/pagination-and-errors">
+    Handle list responses, validation errors, and common API response patterns.
+  </Card>
+  <Card title="Endpoints" href="/endpoints">
+    Browse generated endpoint docs and test requests in the interactive playground.
+  </Card>
+</CardGroup>
+
+## API basics
+
+All API requests use your website domain as the host:
+
+```text
+https://{domain}/api/site
+```
+
+Authenticate requests with a bearer token:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+User-Agent: YourApp/1.0
+```
+
+You can find the API key in your website settings under **Applications** > **API Key**.
+
+## What you can build
+
+Use the API to sync contacts, manage members, update store products, retrieve orders, review bookings, collect form submissions, organize subscriber lists, and configure webhook notifications.
+
+<Note>
+  The endpoint playground is available at `/endpoints`. Link developers to `/api` when they are starting from the website.
+</Note>

@@ -148,7 +148,7 @@
     "library": "lucide"
   },
   "background": {
-    "decoration": "gradient"
+    "decoration": "grid"
   },
   "metadata": {
     "timestamp": true
@@ -163,8 +163,7 @@
       "claude",
       "perplexity",
       "grok",
-      "aistudio",
-      "cursor"
+      "aistudio"
     ],
     "display": "header"
   },

@@ -1,33 +1,83 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Bosscart endpoints"
+description: "Review Bosscart API endpoints grouped by resource."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+This reference lists the Bosscart API endpoints available in the current OpenAPI specification.
 
-## Welcome
+## Contacts
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/contacts` | List all contacts. |
+| `POST` | `/contacts` | Create or update a contact. |
+| `GET` | `/contacts/{id}` | Retrieve a contact. |
+| `PUT` | `/contacts/{id}` | Update a contact. |
+| `DELETE` | `/contacts/{id}` | Delete a contact. |
+| `GET` | `/contacts/search-by-email` | Search contact by email. |
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+## Members
 
-## Authentication
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/members` | List all members. |
+| `POST` | `/members` | Create a member. |
+| `GET` | `/members/{id}` | Retrieve a member. |
+| `PUT` | `/members/{id}` | Update a member. |
+| `DELETE` | `/members/{id}` | Delete a member. |
+| `GET` | `/members/search-by-email` | Search member by email. |
+| `POST` | `/members/start-session` | Start a single sign-on session. |
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+## Member groups
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/member-groups` | List all member groups. |
+| `POST` | `/member-groups` | Create a member group. |
+| `GET` | `/member-groups/{id}` | Retrieve a member group. |
+| `PUT` | `/member-groups/{id}` | Update a member group. |
+| `DELETE` | `/member-groups/{id}` | Delete a member group. |
+
+## Products
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/products` | List all products. |
+| `POST` | `/products` | Create a product. |
+| `GET` | `/products/{id}` | Retrieve a product. |
+| `PUT` | `/products/{id}` | Update a product. |
+| `DELETE` | `/products/{id}` | Delete a product. |
+| `GET` | `/products/categories` | List all categories. |
+
+## Orders
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/orders` | List all orders. |
+| `GET` | `/orders/{id}` | Retrieve an order. |
+| `PUT` | `/orders/{id}` | Update an order. |
+
+## Forms and bookings
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/form-submissions` | List all form submissions. |
+| `GET` | `/bookings` | List all bookings. |
+
+## Subscriber lists
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/subscriber-lists` | List all subscriber lists. |
+| `POST` | `/subscriber-lists` | Create a subscriber list. |
+| `GET` | `/subscriber-lists/{id}` | Retrieve a subscriber list. |
+| `PUT` | `/subscriber-lists/{id}` | Update a subscriber list. |
+| `DELETE` | `/subscriber-lists/{id}` | Delete a subscriber list. |
+
+## Webhooks
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/webhooks` | List all webhooks. |
+| `POST` | `/webhooks` | Create a webhook. |
+| `DELETE` | `/webhooks/{id}` | Delete a webhook. |

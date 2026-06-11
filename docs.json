@@ -9,8 +9,7 @@
     "dark": "#15803D"
   },
   "fonts": {
-    "family": "Questrial",
-    "source": "https://content.app-sources.com/s/56341480152427835/uploads/Downloads/Questrial-Regular-5243637.ttf"
+    "family": "Questrial"
   },
   "favicon": "https://mintlify.s3.us-west-1.amazonaws.com/alavon365/gradient_icon-6787089.png",
   "navigation": {

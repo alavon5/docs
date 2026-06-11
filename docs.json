@@ -174,5 +174,8 @@
     "heading": {
       "family": "Inter"
     }
+  },
+  "markdown": {
+    "schema": true
   }
 }

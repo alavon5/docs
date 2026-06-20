@@ -175,5 +175,9 @@
   },
   "markdown": {
     "schema": false
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": false
   }
 }

@@ -18,7 +18,8 @@
   ],
   "security": [
     {
-      "bearerAuth": []
+      "bearerAuth": [],
+      "clientUserAgent": []
     }
   ],
   "tags": [
@@ -1385,6 +1386,13 @@
         "type": "http",
         "scheme": "bearer",
         "description": "Pass your API key as: `Authorization: Bearer <API KEY>`."
+      },
+      "clientUserAgent": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "User-Agent",
+        "x-default": "BosscartDocs/1.0",
+        "description": "Client identifier sent with requests from the documentation playground."
       }
     },
     "parameters": {

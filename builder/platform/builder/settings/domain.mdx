@@ -1,0 +1,45 @@
+---
+title: "Domain"
+description: "This ensures your website or funnel runs seamlessly with your custom domain."
+source: "https://buildersupport.gitbook.io/help-docs/platform/builder/settings/domain"
+---
+To link your custom domain:
+
+* **Go to Website/Funnel Settings** – Navigate to the **Domains** section.
+* **Enter Your Domain Name** – Type in the website URL you want to connect.
+* **Click "Connect Domain"** – Finalize the setup to establish the connection.
+
+This ensures your website or funnel runs seamlessly with your custom domain.
+
+![](/images/builder/aa5142d49c54a3cb.png)
+
+After entering your domain name and clicking **Connect Domain**, you'll see a screen displaying **two DNS records**.
+
+* These records must be **added to your domain settings** in your domain provider.
+* Access your domain provider’s DNS management section and **input the provided records**.
+* Once added, allow some time for **propagation** before the connection is fully established.
+
+This step ensures your domain is properly linked to your website or funnel!
+
+![](/images/builder/be6578b3d295c535.png)
+
+<Note>
+Contact the customer support of your service provider where you registered your domain to assist you with this if you are unsure of what to do.
+</Note>
+
+Every domain provider should allow you to add these records to your domain. If you can't find them, you can contact your domain provider and ask how to add them. They will connect your domain to your website.
+
+<Warning>
+***NOTE:** Make sure that there aren't any duplicating records, as they will result in a not properly connected domain. You should have only one A record with @ as Host/Name and only one CNAME record with www as Host/Name.*
+</Warning>
+
+After adding the required DNS records to your domain provider, it may take **a few hours** for propagation and verification to complete.
+
+* During this period, the records block will be **Red**, indicating that the domain is still processing.
+* Once propagation is successful, the block will **turn Green**, confirming that **"This domain is currently Active!"**
+
+![](/images/builder/a0ff83d4ff23f1b0.png)
+
+To configure your domain for our native email and automation services, click the link below for more details.
+
+[Email Domain Connection](/builder/platform/messaging-and-workflows/email-domain-connection)

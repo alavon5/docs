@@ -15,12 +15,367 @@
         "tab": "Builder",
         "groups": [
           {
-            "group": "Builder docs",
+            "group": "Start here",
             "pages": [
               "builder"
             ]
+          },
+          {
+            "group": "Platform",
+            "pages": [
+              {
+                "group": "Builder",
+                "pages": [
+                  "builder/platform/builder/global-styling",
+                  "builder/platform/builder/containers",
+                  "builder/platform/builder/mobile-editing",
+                  {
+                    "group": "Settings",
+                    "pages": [
+                      "builder/platform/builder/settings/page-seo",
+                      "builder/platform/builder/settings/file-manager",
+                      "builder/platform/builder/settings/domain",
+                      "builder/platform/builder/settings/language-and-time",
+                      "builder/platform/builder/settings/cookies-and-privacy",
+                      "builder/platform/builder/settings/customer-data",
+                      "builder/platform/builder/settings/favicon-and-social-share-image",
+                      "builder/platform/builder/settings/llms.txt"
+                    ],
+                    "root": "builder/platform/builder/settings"
+                  },
+                  {
+                    "group": "Pages",
+                    "pages": [
+                      "builder/platform/builder/pages/add-new-page",
+                      "builder/platform/builder/pages/add-new-blocks",
+                      "builder/platform/builder/pages/pop-ups"
+                    ],
+                    "root": "builder/platform/builder/pages"
+                  }
+                ],
+                "root": "builder/platform/builder"
+              },
+              {
+                "group": "Widgets",
+                "pages": [
+                  {
+                    "group": "Basic",
+                    "pages": [
+                      "builder/platform/widgets/basic/heading-text",
+                      "builder/platform/widgets/basic/button-widget",
+                      "builder/platform/widgets/basic/container-widget",
+                      "builder/platform/widgets/basic/accordion",
+                      "builder/platform/widgets/basic/icon-list",
+                      "builder/platform/widgets/basic/headline-pill",
+                      "builder/platform/widgets/basic/scrolling-text",
+                      "builder/platform/widgets/basic/social-proof",
+                      "builder/platform/widgets/basic/tables",
+                      "builder/platform/widgets/basic/testimonial-widget",
+                      "builder/platform/widgets/basic/timeline-widget"
+                    ],
+                    "root": "builder/platform/widgets/basic"
+                  },
+                  {
+                    "group": "Media",
+                    "pages": [
+                      "builder/platform/widgets/media/image-widget",
+                      "builder/platform/widgets/media/gallery",
+                      "builder/platform/widgets/media/audio",
+                      "builder/platform/widgets/media/image-hotspot",
+                      "builder/platform/widgets/media/image-auto-rotator",
+                      "builder/platform/widgets/media/image-comparison",
+                      "builder/platform/widgets/media/video-testimonials"
+                    ],
+                    "root": "builder/platform/widgets/media"
+                  },
+                  {
+                    "group": "Lead Generation",
+                    "pages": [
+                      "builder/platform/widgets/lead-generation/forms-widget",
+                      "builder/platform/widgets/lead-generation/quizzes-and-surveys"
+                    ],
+                    "root": "builder/platform/widgets/lead-generation"
+                  },
+                  {
+                    "group": "Store",
+                    "pages": [
+                      "builder/platform/widgets/store/checkout",
+                      "builder/platform/widgets/store/store",
+                      "builder/platform/widgets/store/pricing-comparison",
+                      "builder/platform/widgets/store/pricing"
+                    ],
+                    "root": "builder/platform/widgets/store"
+                  },
+                  {
+                    "group": "Other",
+                    "pages": [
+                      "builder/platform/widgets/other/donation",
+                      "builder/platform/widgets/other/social-media",
+                      "builder/platform/widgets/other/blog",
+                      "builder/platform/widgets/other/chart",
+                      "builder/platform/widgets/other/stat-counter",
+                      "builder/platform/widgets/other/team-members",
+                      "builder/platform/widgets/other/code",
+                      "builder/platform/widgets/other/embed-widget",
+                      "builder/platform/widgets/other/countdown",
+                      "builder/platform/widgets/other/map-widget",
+                      "builder/platform/widgets/other/progress-bar-widget"
+                    ],
+                    "root": "builder/platform/widgets/other"
+                  }
+                ],
+                "root": "builder/platform/widgets"
+              },
+              {
+                "group": "Funnels",
+                "pages": [
+                  "builder/platform/funnels/getting-started",
+                  "builder/platform/funnels/funnel-orientation",
+                  "builder/platform/funnels/additional-settings",
+                  "builder/platform/funnels/a-b-split-testing",
+                  "builder/platform/funnels/create-store-product",
+                  "builder/platform/funnels/upsell-and-downsell"
+                ],
+                "root": "builder/platform/funnels"
+              },
+              {
+                "group": "CRM",
+                "pages": [
+                  "builder/platform/crm/importing-contacts",
+                  "builder/platform/crm/exporting-contacts",
+                  "builder/platform/crm/add-contacts-manually",
+                  "builder/platform/crm/contact-profiles",
+                  "builder/platform/crm/properties",
+                  "builder/platform/crm/crm-tags",
+                  "builder/platform/crm/create-a-membership-group",
+                  "builder/platform/crm/membership-secured-content"
+                ],
+                "root": "builder/platform/crm"
+              },
+              {
+                "group": "Ecommerce",
+                "pages": [
+                  "builder/platform/ecommerce/store-front-orientation",
+                  "builder/platform/ecommerce/creating-store-products",
+                  "builder/platform/ecommerce/connect-your-payment-processor",
+                  "builder/platform/ecommerce/importing-products",
+                  "builder/platform/ecommerce/shipping-options",
+                  "builder/platform/ecommerce/sales-taxes",
+                  "builder/platform/ecommerce/applying-discount",
+                  "builder/platform/ecommerce/product-categories",
+                  "builder/platform/ecommerce/tracking-links",
+                  "builder/platform/ecommerce/managing-orders",
+                  "builder/platform/ecommerce/subscription-managment",
+                  "builder/platform/ecommerce/abandoned-cart",
+                  {
+                    "group": "Order Fulfilment",
+                    "pages": [
+                      "builder/platform/ecommerce/order-fulfilment/shipstation",
+                      "builder/platform/ecommerce/order-fulfilment/shippo",
+                      "builder/platform/ecommerce/order-fulfilment/shipbob",
+                      "builder/platform/ecommerce/order-fulfilment/printful"
+                    ],
+                    "root": "builder/platform/ecommerce/order-fulfilment"
+                  }
+                ],
+                "root": "builder/platform/ecommerce"
+              },
+              {
+                "group": "Messaging & Workflows",
+                "pages": [
+                  "builder/platform/messaging-and-workflows/email-campaigns",
+                  "builder/platform/messaging-and-workflows/automation-overview",
+                  "builder/platform/messaging-and-workflows/sales-tracking",
+                  "builder/platform/messaging-and-workflows/email-lists",
+                  "builder/platform/messaging-and-workflows/email-account-review",
+                  "builder/platform/messaging-and-workflows/individual-email-sending",
+                  "builder/platform/messaging-and-workflows/email-domain-connection",
+                  "builder/platform/messaging-and-workflows/sms-and-whatsapp",
+                  "builder/platform/messaging-and-workflows/why-sms-marketing-is-effective"
+                ],
+                "root": "builder/platform/messaging-and-workflows"
+              },
+              {
+                "group": "System Emails",
+                "pages": [
+                  {
+                    "group": "System email templates",
+                    "pages": [
+                      "builder/platform/system-emails/system-email-templates/appointment-reminder",
+                      "builder/platform/system-emails/system-email-templates/double-opt-in-confirmation",
+                      "builder/platform/system-emails/system-email-templates/download-digital-goods",
+                      "builder/platform/system-emails/system-email-templates/member-registration-approved",
+                      "builder/platform/system-emails/system-email-templates/password-recovery",
+                      "builder/platform/system-emails/system-email-templates/new-appointment",
+                      "builder/platform/system-emails/system-email-templates/order-shipped",
+                      "builder/platform/system-emails/system-email-templates/new-order",
+                      "builder/platform/system-emails/system-email-templates/order-cancelled",
+                      "builder/platform/system-emails/system-email-templates/order-completed",
+                      "builder/platform/system-emails/system-email-templates/subscription-failed-to-renew",
+                      "builder/platform/system-emails/system-email-templates/community-mention",
+                      "builder/platform/system-emails/system-email-templates/replied-to-you"
+                    ],
+                    "root": "builder/platform/system-emails/system-email-templates"
+                  }
+                ],
+                "root": "builder/platform/system-emails"
+              },
+              "builder/platform/ai-writing-assistant",
+              {
+                "group": "Booking & Appointments",
+                "pages": [
+                  "builder/platform/booking-and-appointments/creating-booking"
+                ],
+                "root": "builder/platform/booking-and-appointments"
+              },
+              "builder/platform/facebook-capi"
+            ]
+          },
+          {
+            "group": "Community & LMS",
+            "pages": [
+              {
+                "group": "Community Lms",
+                "pages": [
+                  {
+                    "group": "Create a Community",
+                    "pages": [
+                      "builder/community-lms/create-a-community/community-settings",
+                      "builder/community-lms/create-a-community/community-dashboard",
+                      "builder/community-lms/create-a-community/community-moderation",
+                      "builder/community-lms/create-a-community/assign-community-roles"
+                    ],
+                    "root": "builder/community-lms/create-a-community"
+                  }
+                ]
+              },
+              {
+                "group": "Circles",
+                "pages": [
+                  "builder/circles/circle-settings",
+                  "builder/circles/circle-settings-and-styling",
+                  "builder/circles/editing-your-circle",
+                  "builder/circles/add-a-new-page-group",
+                  "builder/circles/analytics-and-engagement"
+                ],
+                "root": "builder/circles"
+              },
+              "builder/access-levels",
+              "builder/content-availability",
+              {
+                "group": "Community Widgets",
+                "pages": [
+                  "builder/community-widgets/circle",
+                  "builder/community-widgets/circles",
+                  "builder/community-widgets/comment-area",
+                  "builder/community-widgets/discussion",
+                  "builder/community-widgets/reviews",
+                  "builder/community-widgets/wall-forum"
+                ],
+                "root": "builder/community-widgets"
+              },
+              "builder/community-notifications"
+            ]
+          },
+          {
+            "group": "Video",
+            "pages": [
+              {
+                "group": "Video",
+                "pages": [
+                  {
+                    "group": "Getting Started",
+                    "pages": [
+                      "builder/video/getting-started/video-manager",
+                      "builder/video/getting-started/single-video",
+                      "builder/video/getting-started/playlist"
+                    ],
+                    "root": "builder/video/getting-started"
+                  }
+                ]
+              },
+              "builder/video-automation"
+            ]
+          },
+          {
+            "group": "Blog",
+            "pages": [
+              "builder/blog/starting-a-blog",
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "builder/blog/getting-started/blog-header-and-sidebar-settings",
+                  "builder/blog/getting-started/blog-settings",
+                  "builder/blog/getting-started/article-basics",
+                  "builder/blog/getting-started/article-content"
+                ],
+                "root": "builder/blog/getting-started"
+              },
+              {
+                "group": "Article Settings",
+                "pages": [
+                  "builder/blog/article-settings/blog-article-tags",
+                  "builder/blog/article-settings/blog-article-categories",
+                  "builder/blog/article-settings/blog-article-url",
+                  "builder/blog/article-settings/blog-article-author",
+                  "builder/blog/article-settings/blog-article-post-date",
+                  "builder/blog/article-settings/blog-article-comments"
+                ],
+                "root": "builder/blog/article-settings"
+              }
+            ]
+          },
+          {
+            "group": "Funnel designs",
+            "pages": [
+              {
+                "group": "Types of Funnels",
+                "pages": [
+                  "builder/funnel-designs/types-of-funnels/lead-generation",
+                  "builder/funnel-designs/types-of-funnels/webinar",
+                  "builder/funnel-designs/types-of-funnels/hero",
+                  "builder/funnel-designs/types-of-funnels/onboarding",
+                  "builder/funnel-designs/types-of-funnels/appointment-booking",
+                  "builder/funnel-designs/types-of-funnels/opt-in",
+                  "builder/funnel-designs/types-of-funnels/online-course-funnel",
+                  "builder/funnel-designs/types-of-funnels/membership-funnel",
+                  "builder/funnel-designs/types-of-funnels/summit-funnel",
+                  "builder/funnel-designs/types-of-funnels/digital-download-funnel"
+                ],
+                "root": "builder/funnel-designs/types-of-funnels"
+              }
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              {
+                "group": "Email",
+                "pages": [
+                  "builder/internal-integrations/email/email-integrations",
+                  "builder/internal-integrations/email/connect-custom-email"
+                ],
+                "root": "builder/internal-integrations/email"
+              },
+              {
+                "group": "Twilio",
+                "pages": [
+                  "builder/internal-integrations/twilio/create-an-account"
+                ],
+                "root": "builder/internal-integrations/twilio"
+              }
+            ]
+          },
+          {
+            "group": "Other",
+            "pages": [
+              "builder/other/roadmap",
+              "builder/other/faqs",
+              "builder/other/bug-fixes"
+            ]
           }
-        ]
+        ],
+        "directory": "card"
       },
       {
         "tab": "API Guide",

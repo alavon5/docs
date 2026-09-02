@@ -1,0 +1,48 @@
+---
+title: "llms.txt"
+description: "This setting publishes a special file (/llms.txt) that helps AI tools, like ChatGPT, Perplexity, and Google AI Overviews, understand and reference your website more accurately...."
+source: "https://buildersupport.gitbook.io/help-docs/platform/builder/settings/llms.txt"
+---
+This setting publishes a special file (`/llms.txt`) that helps AI tools, like ChatGPT, Perplexity, and Google AI Overviews, understand and reference your website more accurately. Think of it as the AI equivalent of a sitemap: instead of helping search engines index your pages, it helps AI assistants read and interpret your site's content correctly when answering questions about your business.
+
+![](/images/builder/ee3e06deb3d2445d.png)
+
+#### **Why use it:**
+
+* **Improves how AI represents your business**: as more people use AI tools to search and get answers, having a clear, structured summary of your site helps those tools describe your products, services, and content accurately instead of guessing or missing context.
+* **Future-proofs your visibility**: AI-powered search and answer engines are becoming a bigger source of traffic; llms.txt is an early, low-effort way to make sure your site is "AI-readable."
+* **Simple to enable, no technical setup required**: just toggle it on and the file is automatically generated and served at `/llms.txt`.
+
+### **How it works:**
+
+* **Enable llms.txt**: turns the feature on or off
+  * **On**: your site serves a structured llms.txt file at yoursite.com/llms.txt, which AI assistants can access to better understand your site
+  * **Off**: visiting that URL returns a 404 (page not found), meaning no file is being served
+
+![](/images/builder/e9766b37ea3271d3.png)
+
+### **What's Inside Your llms.txt File**
+
+When you enable llms.txt, the platform auto-generates a starting version of the file by pulling from your existing site content, but unlike a fully locked, auto-only file, you can edit the generated text directly, and your edits are saved back into the live file.
+
+![](/images/builder/c5040cdfa1bde2a4.png)
+
+### **What gets auto-populated initially:**
+
+* **Site header**: your website's name and tagline, pulled from your homepage title/description
+* **Key Pages**: every page on your site, listed with its title, URL, and description (sourced from each page's SEO Info settings)
+* **Grouped sections**: pages like Blog, Store, and Portfolio are automatically detected and grouped separately for clarity
+* **Contact info**: your business name and support email, pulled from your site's general settings
+* **Sitemap link**: a reference to your full sitemap for deeper crawling
+
+### **Editing the file:**
+
+* The generated text appears in an editable field, you can rewrite descriptions, reorder sections, add extra context for AI assistants, or remove pages you don't want listed
+* Saving your edits regenerates the live file at **yoursite.com/llms.txt** with your changes
+* This is useful if you want to hand-craft how AI assistants understand your business, rather than relying purely on your page SEO descriptions
+
+### **Good to know:**
+
+* Turning llms.txt **On** publishes the file (auto-generated, then editable) at yoursite.com/llms.txt
+* Turning it **Off** removes the file, and the URL returns a 404 instead
+* If you add new pages later, note that manual edits to the file won't automatically re-sync with new SEO changes, you may need to revisit and update the file yourself to keep it current

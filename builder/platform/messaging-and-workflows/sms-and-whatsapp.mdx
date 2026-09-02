@@ -1,0 +1,186 @@
+---
+title: "SMS & WhatsApp"
+description: "Once your Twilio account is connected, you unlock powerful messaging capabilities!"
+source: "https://buildersupport.gitbook.io/help-docs/platform/messaging-and-workflows/sms-and-whatsapp"
+---
+<Note>
+You will need to set up a Twilio account to use this feature. Click [here](/builder/internal-integrations/twilio) to read more about setting up your Twilio integration to send SMS and WhatsApp messages.
+</Note>
+
+[Twilio](/builder/internal-integrations/twilio)
+
+Once your **Twilio account is connected**, you unlock powerful messaging capabilities!
+
+**Key Features You'll Learn:**
+
+* **Connecting Twilio to Your Projects** – Integrate messaging seamlessly into your workflows.
+* **Sending Messages** – Set up direct communication with users via SMS.
+* **Using Messaging with Automations** – Automate interactions for efficiency and engagement.
+* **Leveraging SMS for Marketing** – Discover why SMS is a high-converting tool and how to use it effectively.
+
+A **versatile tool** for real-time engagement and seamless customer communication!
+
+## **Setting up your Twilio Integration**
+
+Head to your website builder dashboard and navigate to the **settings cog**. Select **Applications**, then **add application** and scroll down until you see the **Twilio integration** tab.
+
+![](/images/builder/49951a393e37d892.png)
+
+### Configure the Twilio Settings
+
+Upon setting up your Twilio connection, within the Twilio dashboard you may of noticed some ID's etc. You now need to add these credentials to the Twilio application settings below.
+
+![](/images/builder/2a5688771bc15125.png)
+
+Here is where you can find the Twilio credentials required. Simply copy and paste the:
+
+* Account SID
+* Auth Token
+* My Twilio Phone Number
+
+![](/images/builder/faf3534ddd105034.png)<p>Twilio Dashboard</p>
+
+### Sending Bulk Messages
+
+If you want to send bulk SMS and WhatsApp messages you will need to add in your Messaging Services ID.
+
+Read more about Messaging Services [Here](/builder/internal-integrations/twilio/create-an-account#creating-a-service)
+
+![](/images/builder/2a5a988f96b974ec.png)
+
+## Sending Messages
+
+Great you're all set up and ready to start sending messages to your customers. 
+
+### How to send messages
+
+To send messages to your customers, you can do so by either sending individual messages or sending in bulk via campaigns and your automation flows.
+
+### Individual messaging
+
+To send individual messages to your customers it works pretty much the same way the [individual email](/builder/platform/messaging-and-workflows/individual-email-sending) does. First head over to your [**Contacts**](/builder/platform/crm) tab and select a customer you want to send a message to.
+
+![](/images/builder/b90de3806fe53c3d.png)
+
+<Warning>
+Note: You can only send messages to customers who are actively subscribed to email.
+</Warning>
+
+To determine if the customer is subscribed, look for a small check icon in the profile image at the top. If this icon is green, the customer is subscribed. You can also manually subscribe them if needed by clicking on the three dots and selecting '**Subscribe**.'
+
+Select the messaging channel you want to use to send the message:
+
+* SMS
+* WhatsApp
+* Voice
+
+### Individual SMS
+
+Both SMS and WhatsApp are similar in setup, but they differ when it comes to sending messages. WhatsApp requires you to use message templates and tags to comply with their messaging policy. First, let's send an SMS message.
+
+![](/images/builder/17594bc51d2cc3e4.png)<p>Sending an SMS</p>
+
+When sending an SMS you can **add tags**, **send** **test**, and **schedule** 
+
+**Add tag**: Help keep the message personalized to your customer. When selecting the Add tag button a new window will display, this is where you can use the CRM properties.
+
+![](/images/builder/03e8cc612024afbd.png)
+
+### Individual WhatsApp
+
+To send a WhatsApp message to your customers, navigate to the **Contacts** tab and select the contact you want to message. You will now see the customer's individual profile displayed. Click the **message icon** and select '**Send WhatsApp'**.
+
+![](/images/builder/95ed3d8357a4d3b0.png)
+
+Just like sending an SMS, you can also **send an attachment** (Image file) with a WhatsApp message. You’ll also notice a new button displayed: '**Submit Message for Approval**.' Once you have finished writing your message, you will need to send it to WhatsApp as a template for verification, which only takes a few seconds. **Note**: It can sometimes take a little longer, but this is out of our hands, as it’s controlled by WhatsApp. 
+
+ 
+
+![](/images/builder/ba979558ad05c0b4.png)
+
+When you click the 'Submit Message for Approval' button a new window will display. In this window you will need to add some details. 
+
+* **Name**:  
+
+  #### *Example Names*:
+
+  * `welcome_message`
+  * `order_confirmation`
+  * `shipping_update`
+  * `account_verification`
+
+<Note>
+Make sure the name you choose is descriptive enough to convey the purpose of the template but also concise. This will help you easily identify the template when you need to use it later.
+</Note>
+
+* Language
+* Category
+
+The two categories, **Utility** and **Marketing**, are designed to classify the type of messages you send via WhatsApp templates. Each category serves a different purpose, and it’s important to choose the right one based on the content of your message.
+
+#### Summary
+
+* **Utility**: Use for essential, transactional, or account-related messages. It’s about delivering necessary information.
+* **Marketing**: Use for promotional and engagement messages aimed at driving sales or customer interaction.
+
+Choosing the correct category is important to comply with WhatsApp’s policies and to ensure your messages are effectively received by your audience.
+
+![](/images/builder/ac1d68b0c7355981.png)
+
+### WhatsApp Templates
+
+Once you have sent a message and had your message/template verified, you will be able to use it again or create new templates for different types of messages, whether they are for utility or marketing.
+
+To **reuse a WhatsApp messaging template**, simply go to '**Send WhatsApp Message**,' and in the messaging window, you will see a new tab and options at the top. 
+
+![](/images/builder/2b220d0456f98237.png)
+
+## Message Campaign Sending
+
+Not only can you send individual messages to your customers, but you can also unleash the power of mass messaging—just like sending an engaging [email campaign](/builder/platform/messaging-and-workflows/email-campaigns)! Reach a wider audience and make your communication more impactful!
+
+### Setup a message campaign
+
+Navigate to the [Email and Automations](/builder/platform/messaging-and-workflows/email-campaigns#select-campaign-tab) tab, select '**Campaigns**,' and then click on 'Create New.'
+
+Next, you'll need to select the campaign type; in this instance, we will be sending a message, not an email.
+
+![](/images/builder/7a8fdb33cfea3868.png)
+
+Select the channel or type of message you want to send: 
+
+* SMS Campaign
+* WhatsApp Campaign
+* Voice Campaign
+
+Once selected chose what list/audience you want to send it to.
+
+![](/images/builder/3dbc8be5f94e2d23.png)
+
+### Send a message campaign
+
+Just like setting up an [individual message](#individual-messaging) for a customer, the process is exactly the same when creating a bulk message campaign.
+
+![](/images/builder/6aec66172b8abe82.png)<p>sending a SMS type campaign</p>
+
+Once you have created the message you want to send to a selected audience/list you can now go ahead and send or schedule. 
+
+![](/images/builder/a257c832ef65af70.png)
+
+## Messaging Automation
+
+Just like creating an [email automation](/builder/platform/messaging-and-workflows/automation-overview#create-an-automation) campaign, you can supercharge your workflows by adding SMS, WhatsApp, and even voice messaging into the mix! Expand your reach and engage your audience across multiple channels effortlessly.
+
+![](/images/builder/082e372b436bb187.png)
+
+### Add a workflow message
+
+Create a new automation flow or add to an existing one. You'll be able to add the messaging components at any stage in your automation flow. 
+
+To add a message in to the flow, select where you want to add it. Then select the messaging channel you want to use. 
+
+![](/images/builder/6a9727ecffb1c75c.png)
+
+Once you have selected the messaging channel, you can **create a new message**, or if using WhatsApp, you’ll be able to use any saved [templates](#whatsapp-templates) you’ve created before.
+
+![](/images/builder/fe47d7bddae02cfc.png)

@@ -21,6 +21,13 @@
             ]
           },
           {
+            "group": "AiDen AI helper",
+            "pages": [
+              "builder/aiden/how-to-use-aiden"
+            ],
+            "root": "builder/aiden"
+          },
+          {
             "group": "Platform",
             "pages": [
               {
